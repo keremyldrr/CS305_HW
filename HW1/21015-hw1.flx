@@ -1,0 +1,81 @@
+%x str
+ int lineNum = 1;
+tSELF \/>
+tCLOSE >
+tEND <\/
+tOPEN <
+tCOURSE course
+tCLASS class
+tMEETING meeting
+tCONSTRAINT constraint
+tITEM item
+tCODE code=
+tTYPE type=
+tNAME name=
+tINSTRUCTOR instructor=
+tCRN crn=
+tCAPACITY capacity=
+tEND_A end=
+tNUM [0-9]*
+tSECTION section=
+tSTART start=
+tDAY day=
+tTIME [0-2][0-9]:[0-5][0-9]
+ int inString = 0;
+ int inTime = 0;
+ int inDay = 0;
+tMON M
+tWED W
+tFRI F
+tTUE T
+tTHU R
+
+%%
+\n lineNum++;
+{tTIME} {
+	printf("%d tTIME ",lineNum);
+	printf("%s \n",yytext);
+	}
+
+{tSTART} {inTime = 1; printf("%d tSTART\n",lineNum);}
+{tSECTION} printf("%d tSECTION\n",lineNum);
+{tNUM} {if(inTime == 0)printf("%d tNUM ",lineNum); printf("%s \n",yytext);}
+{tEND_A}  {printf("%d tEND_A\n",lineNum); inTime = 0;}
+{tCAPACITY} printf("%d tCAPACITY\n",lineNum);
+{tCRN} printf("%d tCRN\n",lineNum);
+{tSELF} printf("%d tSELF\n",lineNum);
+{tCLASS} printf("%d tCLASS\n",lineNum);
+{tMEETING} printf("%d tMEETING\n",lineNum);
+{tCONSTRAINT} printf("%d tCONSTRAINT\n",lineNum);
+{tITEM} printf("%d tITEM\n",lineNum);
+{tTYPE} printf("%d tTYPE\n",lineNum);
+{tNAME} printf("%d tNAME\n",lineNum);
+{tINSTRUCTOR} printf("%d tINSTRUCTOR\n",lineNum);
+{tOPEN} printf("%d tOPEN \n",lineNum);
+{tCOURSE} printf("%d tCOURSE\n",lineNum);
+{tCODE} printf("%d tCODE \n",lineNum);
+{tEND} printf("%d tEND\n",lineNum);
+{tDAY} inDay = 1;printf("%d tDAY \n",lineNum);
+{tCLOSE} printf("%d tCLOSE \n",lineNum);
+
+{tTHU} printf("%d tTHU\n",lineNum);inDay = 0;
+{tTUE} printf("%d tTUE\n",lineNum);inDay = 0;
+{tFRI} printf("%d tFRI\n",lineNum);inDay = 0;
+{tWED} printf("%d tWED\n",lineNum);inDay = 0;
+{tMON} printf("%d tMON\n",lineNum);inDay = 0; 
+(["]|[’]|['])+[0-9*a-z*A-Z*\-\* ]+(["]|[’]|['])+ {
+
+	     yytext[0] = '(';
+	     yytext[yyleng-1] =')';
+	     
+
+
+	     printf("%d tSTRING ",lineNum);
+	     printf("%s \n",yytext);
+
+          };
+%%
+main(){
+
+yylex();
+}
