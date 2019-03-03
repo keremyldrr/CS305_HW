@@ -1,5 +1,5 @@
 
-#line 2 "lex.yy.c"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -520,7 +520,7 @@ char *yytext;
  int inString = 0;
  int inTime = 0;
  int inDay = 0;
-#line 523 "lex.yy.c"
+#line 524 "lex.yy.c"
 
 #define INITIAL 0
 #define str 1
@@ -740,7 +740,7 @@ YY_DECL
 	{
 #line 34 "21015-hw1.flx"
 
-#line 743 "lex.yy.c"
+#line 744 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -956,7 +956,7 @@ YY_RULE_SETUP
 #line 78 "21015-hw1.flx"
 ECHO;
 	YY_BREAK
-#line 959 "lex.yy.c"
+#line 960 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(str):
 	yyterminate();
