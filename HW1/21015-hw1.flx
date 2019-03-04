@@ -63,7 +63,7 @@ tTHU R
 {tFRI} printf("%d tFRI\n",lineNum);inDay = 0;
 {tWED} printf("%d tWED\n",lineNum);inDay = 0;
 {tMON} printf("%d tMON\n",lineNum);inDay = 0; 
-(["]|[’]|['])+[0-9*a-z*A-Z*\-\* ]+(["]|[’]|['])+ {
+["’'][^"']+["’'] {
 
 	     yytext[0] = '(';
 	     yytext[yyleng-1] =')';
