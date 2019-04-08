@@ -1,7 +1,9 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include "hw4.h"
 #include "hw4.tab.h"
+
 int noOfLine = 1;
 %}
 
@@ -33,7 +35,9 @@ capacity= return tCAPACITY;
 end= return tEND_A;
 '[^']*'	return tSTRING;
 ["][^"]*["] return tSTRING;
-{DIGIT}+ return tNUM;
+{DIGIT}+ {yylval.crn = atoi(yytext);
+	 return tNUM;
+}
 W return  tWED;
 F return  tFRI;
 {DIGIT}{2}:{DIGIT}{2}  return tTIME;

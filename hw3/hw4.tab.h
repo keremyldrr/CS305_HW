@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,9 +30,6 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
-
 #ifndef YY_YY_HW4_TAB_H_INCLUDED
 # define YY_YY_HW4_TAB_H_INCLUDED
 /* Debug traces.  */
@@ -57,30 +54,43 @@ extern int yydebug;
     tNAME = 264,
     tTYPE = 265,
     tSTRING = 266,
-    tNUM = 267,
-    tSECTION = 268,
-    tINSTRUCTOR = 269,
-    tCRN = 270,
-    tCAPACITY = 271,
-    tMEETING = 272,
-    tSELF = 273,
-    tDAY = 274,
-    tSTART = 275,
-    tTIME = 276,
-    tEND_A = 277,
-    tMON = 278,
-    tTUE = 279,
-    tWED = 280,
-    tTHU = 281,
-    tFRI = 282,
-    tCONSTRAINT = 283,
-    tITEM = 284
+    tSECTION = 267,
+    tINSTRUCTOR = 268,
+    tCRN = 269,
+    tCAPACITY = 270,
+    tMEETING = 271,
+    tSELF = 272,
+    tDAY = 273,
+    tSTART = 274,
+    tTIME = 275,
+    tEND_A = 276,
+    tMON = 277,
+    tTUE = 278,
+    tWED = 279,
+    tTHU = 280,
+    tFRI = 281,
+    tCONSTRAINT = 282,
+    tITEM = 283,
+    tNUM = 284
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 15 "hw4.y" /* yacc.c:1909  */
+
+
+  int crn;
+  TreeNode *treeptr;
+
+
+#line 91 "hw4.tab.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
