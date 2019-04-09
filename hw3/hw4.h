@@ -1,26 +1,54 @@
 #ifndef HW4_HEADER
-#define HW4_HEADER
+#define  HW4_HEADER
+ 
 
-typedef enum {courseAttr,classAttr,meetingAttr,itemAttr}attrType;
-typedef enum {meeting,course,class,item}listType;
-typedef enum {COURSE, CONSTRAINT}ELEMTYPE;
-typedef enum {CRN,CODE}itemAttrType;
+typedef enum {COURSE, CONSTRAINT,MEETING,CODE,TYPE,NAME,CLASS,ITEM}ELEMTYPE;//MORE TO COME
 
 
+typedef struct{
+  ELEMTYPE type;
+ struct Attribute *next;
+}Attribute;
 typedef struct{
   int crncnt;
   int codecnt;
 }constNode;
 
+
 typedef struct{
-  int val;
+  struct Attribute *attr;
+  struct TreeNode *classes;
+  
 }
+  
   courseNode;
 
+
+typedef struct{
+  struct TreeNode *attribs;
+  struct TreeNode *meetings;
+  int section;
+  int instructor;
+  int crn;
+  int capacity;
+}
+  classNode;
+
+typedef struct{
+  struct TreeNode *attribs;
+  int start;
+  int end;
+  int day; 
+}
+  meetNode;
+typedef struct{}itemNode;
 typedef union{
  courseNode course;
  constNode constraint;
-}wildCard;
+ classNode class;
+ meetNode meeting;
+ itemNode item;
+ }wildCard;
 
 typedef struct TreeNode{
   ELEMTYPE thisElemType;

@@ -72,11 +72,14 @@
 
   TreeNode *rootPtr;
   TreeNode * genConst(int crn);
+  TreeNode * genNode(ELEMTYPE,Attribute *);
+  Attribute *makeAttr(ELEMTYPE);
+  Attribute *connectAttr(Attribute *,Attribute *);
   void printTree(TreeNode *);
   
   
 
-#line 80 "hw4.tab.c" /* yacc.c:339  */
+#line 83 "hw4.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -146,14 +149,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "hw4.y" /* yacc.c:355  */
+#line 18 "hw4.y" /* yacc.c:355  */
 
 
-  int crn;
+  int crn;//buralar degiscek
   TreeNode *treeptr;
+  Attribute *attr;
 
-
-#line 157 "hw4.tab.c" /* yacc.c:355  */
+#line 160 "hw4.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -170,7 +173,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 174 "hw4.tab.c" /* yacc.c:358  */
+#line 177 "hw4.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -470,12 +473,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    25,    25,    25,    26,    26,    27,    27,    28,    29,
-      30,    30,    31,    31,    31,    32,    32,    33,    34,    35,
-      36,    37,    37,    38,    38,    38,    38,    39,    39,    40,
-      41,    42,    43,    43,    44,    44,    44,    45,    45,    45,
-      45,    45,    46,    47,    48,    48,    49,    50,    51,    52,
-      52
+       0,    35,    35,    35,    36,    36,    37,    37,    38,    39,
+      40,    40,    41,    41,    41,    42,    42,    43,    44,    45,
+      46,    47,    47,    48,    48,    48,    48,    49,    49,    50,
+      51,    52,    53,    53,    54,    54,    54,    55,    55,    55,
+      55,    55,    56,    57,    58,    58,    59,    60,    61,    62,
+      62
 };
 #endif
 
@@ -1302,26 +1305,56 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 46:
-#line 49 "hw4.y" /* yacc.c:1646  */
-    {rootPtr = (yyvsp[-1].treeptr);}
-#line 1309 "hw4.tab.c" /* yacc.c:1646  */
+        case 4:
+#line 36 "hw4.y" /* yacc.c:1646  */
+    {rootPtr = (yyvsp[0].treeptr);}
+#line 1312 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
-  case 49:
-#line 52 "hw4.y" /* yacc.c:1646  */
-    {}
-#line 1315 "hw4.tab.c" /* yacc.c:1646  */
+  case 6:
+#line 37 "hw4.y" /* yacc.c:1646  */
+    {(yyval.treeptr) = genNode(COURSE,(yyvsp[-2].attr));}
+#line 1318 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
-  case 50:
-#line 52 "hw4.y" /* yacc.c:1646  */
-    {(yyval.treeptr) = genConst((yyvsp[0].crn));}
-#line 1321 "hw4.tab.c" /* yacc.c:1646  */
+  case 8:
+#line 38 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = (yyvsp[-1].attr);}
+#line 1324 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 10:
+#line 40 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = (yyvsp[0].attr) ;}
+#line 1330 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 40 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
+#line 1336 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 12:
+#line 41 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = makeAttr(CODE);}
+#line 1342 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 13:
+#line 41 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr)=makeAttr(NAME);}
+#line 1348 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 14:
+#line 41 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr)=makeAttr(TYPE);}
+#line 1354 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1325 "hw4.tab.c" /* yacc.c:1646  */
+#line 1358 "hw4.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1549,28 +1582,59 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 53 "hw4.y" /* yacc.c:1906  */
+#line 63 "hw4.y" /* yacc.c:1906  */
 
+Attribute * makeAttr(ELEMTYPE elem){
 
-TreeNode * genConst(int crn)
-{
-    printf("val is %d \n",crn);
-  TreeNode *ret = (TreeNode *)malloc(sizeof(TreeNode));
-  ret->thisElemType = CONSTRAINT;
-  ret->node = (wildCard *)malloc(sizeof(wildCard));
-  ret->node->course.val = crn;
+  Attribute *ret = (Attribute *)malloc(sizeof(Attribute));
+  ret->type = elem;
+  ret->next = 0;
 
   return ret;
 
+}
+
+Attribute * connectAttr(Attribute *a1,Attribute *a2){
+
+  a1->next = a2;
+
+  return a1;
+
+
 
 }
+TreeNode* genNode(ELEMTYPE type,Attribute *attributes)
+{
+  TreeNode *ret = (struct TreeNode *)malloc(sizeof(TreeNode));
+  ret ->thisElemType = type;
+  if(type == COURSE){
+    ret->node = (wildCard *)malloc(sizeof(wildCard));
+    Attribute *p = ret->node->course.attr;
+    while(attributes != NULL)
+      {
+        
+	p->next = (struct Attribute *)malloc(sizeof(Attribute));
+	p->next->type =  attributes->type;
+	p = p->next;
+	attributes = attributes->next;
+	
+
+      }
+    //    ret->node->course->attr = (Attribute *)malloc(sizeof(Attribute));
+    
+  }
+  return ret;
+}
+
 int main(){
 	if(yyparse()){
 		printf("ERROR\n");
 		return 1;		
 	}else{
-		printf("OK\n");
-		printf("%d ",rootPtr->node->course.val);
+	  printf("OK\n");
+
+	  Attribute *p;
+	  
 		return 0;
 	}	
 } 

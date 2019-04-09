@@ -80,12 +80,12 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "hw4.y" /* yacc.c:1909  */
+#line 18 "hw4.y" /* yacc.c:1909  */
 
 
-  int crn;
+  int crn;//buralar degiscek
   TreeNode *treeptr;
-
+  Attribute *attr;
 
 #line 91 "hw4.tab.h" /* yacc.c:1909  */
 };
