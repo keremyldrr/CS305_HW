@@ -5,42 +5,35 @@
 typedef enum {COURSE, CONSTRAINT,MEETING,CODE,TYPE,NAME,CLASS,ITEM}ELEMTYPE;//MORE TO COME
 
 
-typedef struct{
+typedef struct Attribute{
   ELEMTYPE type;
- struct Attribute *next;
+  struct Attribute *next;
 }Attribute;
-typedef struct{
+
+typedef struct constNode{
   int crncnt;
   int codecnt;
 }constNode;
 
 
-typedef struct{
+typedef struct courseNode{
   struct Attribute *attr;
   struct TreeNode *classes;
   
-}
-  
-  courseNode;
+}courseNode;
 
 
-typedef struct{
-  struct TreeNode *attribs;
+typedef struct classNode{
+  struct Attribute *attr;
   struct TreeNode *meetings;
-  int section;
-  int instructor;
-  int crn;
-  int capacity;
-}
-  classNode;
+}classNode;
 
-typedef struct{
+typedef struct meetNode{
   struct TreeNode *attribs;
   int start;
   int end;
   int day; 
-}
-  meetNode;
+}meetNode;
 typedef struct{}itemNode;
 typedef union{
  courseNode course;

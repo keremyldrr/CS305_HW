@@ -4,12 +4,3 @@
 <meeting start=08:40 end=09:30 day=F/>
 </class>
 </course>
-<course code="CS301R" name="Algorithms-Recitation" type="Recitation">
-<class section="0" instructor='Husnu Yenigun' crn=20257>
-<meeting start=17:40 day=M end=18:30/>
-</class>
-</course>
-<constraint>
-<item code="CS305"/>
-<item crn=20257/>
-</constraint>

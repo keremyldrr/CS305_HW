@@ -5,15 +5,13 @@
   void yyerror(const char *s){//called by yyparse on error
     printf("%s\n", s);
   }
-
   TreeNode *rootPtr;
   TreeNode * genConst(int crn);
   TreeNode * genNode(ELEMTYPE,Attribute *);
   Attribute *makeAttr(ELEMTYPE);
   Attribute *connectAttr(Attribute *,Attribute *);
   void printTree(TreeNode *);
-  
-  %}
+    %}
 
 %union {
 
@@ -27,6 +25,8 @@
 %type <attr> courseAttrList
 %type <treeptr> elementList
 %type <treeptr> element
+%type <treeptr> classList
+%type <treeptr> class
 %type <attr> beginCourse
 
 %token tOPEN tCOURSE tCLOSE tEND tCODE tCLASS  tNAME tTYPE tSTRING tSECTION  tINSTRUCTOR tCRN  tCAPACITY tMEETING tSELF tDAY tSTART tTIME  tEND_A tMON  tTUE  tWED  tTHU  tFRI tCONSTRAINT tITEM 
@@ -34,13 +34,13 @@
 %%
 prog :  elementList | ;
 elementList :  element{rootPtr = $1;} | element elementList;
-element : beginCourse classList endCourse{$$ = genNode(COURSE,$1);} | beginConstraint itemList endConstraint;
-beginCourse : tOPEN tCOURSE  courseAttrList tCLOSE{$$ = $3;};
+element : beginCourse classList endCourse{$$ = genNode(COURSE,$1); $$->node.classes = genNode(CLASS,$2);} | beginConstraint itemList endConstraint;
+beginCourse : tOPEN tCOURSE courseAttrList tCLOSE {$$ = $3};
 endCourse : tEND tCOURSE tCLOSE;
-courseAttrList :  courseAttr{$$ = $1 ;} |  courseAttr  courseAttrList{$$ = connectAttr($1,$2);};
-courseAttr : tCODE tSTRING {$$ = makeAttr(CODE);}| tNAME tSTRING{$$=makeAttr(NAME);}|tTYPE tSTRING{$$=makeAttr(TYPE);};
-classList : class | class classList;
-class :  beginClass classAttrList endClass meetingList closeClass;
+courseAttrList :  courseAttr{ $$ = connectAttr($1,NULL); } |  courseAttr  courseAttrList {$$ = connectAttr($1,$2);};
+courseAttr : tCODE tSTRING {$$ = makeAttr(CODE)}| tNAME tSTRING{$$=makeAttr(NAME);}|tTYPE tSTRING{$$=makeAttr(TYPE); };
+classList : class{$$ = $1;} | class classList;
+class :  beginClass classAttrList endClass meetingList closeClass {};
 beginClass  : tOPEN tCLASS;
 endClass :  tCLOSE;
 closeClass : tEND tCLASS tCLOSE;
@@ -62,10 +62,10 @@ endItem : tSELF;
 itemAttr: tCODE tSTRING | tCRN tNUM ;
 %%
 Attribute * makeAttr(ELEMTYPE elem){
-
+  
   Attribute *ret = (Attribute *)malloc(sizeof(Attribute));
   ret->type = elem;
-  ret->next = 0;
+  ret->next = NULL;
 
   return ret;
 
@@ -73,45 +73,60 @@ Attribute * makeAttr(ELEMTYPE elem){
 
 Attribute * connectAttr(Attribute *a1,Attribute *a2){
 
-  a1->next = a2;
+  Attribute *ptr = (Attribute *)malloc(sizeof(Attribute));
+  ptr->type = a1->type;
+  ptr->next = a2;
 
-  return a1;
+
+  return ptr;
 
 
 
 }
 TreeNode* genNode(ELEMTYPE type,Attribute *attributes)
 {
+  
   TreeNode *ret = (struct TreeNode *)malloc(sizeof(TreeNode));
   ret ->thisElemType = type;
+  
   if(type == COURSE){
     ret->node = (wildCard *)malloc(sizeof(wildCard));
-    Attribute *p = ret->node->course.attr;
+    Attribute *p = (Attribute *)malloc(sizeof(Attribute));
+    p->type = attributes->type;
+    ret->node->course.attr = p;
+    attributes = attributes->next;
+  
     while(attributes != NULL)
       {
-        
 	p->next = (Attribute *)malloc(sizeof(Attribute));
+        	
 	p->next->type =  attributes->type;
 	p = p->next;
 	attributes = attributes->next;
-	
 
-      }
-    //    ret->node->course->attr = (Attribute *)malloc(sizeof(Attribute));
+
+	}
+    
     
   }
   return ret;
 }
 
 int main(){
-	if(yyparse()){
-		printf("ERROR\n");
+  
+  if(yyparse()){
+    printf("ERROR\n");
 		return 1;		
-	}else{
-	  printf("OK\n");
-
-	  Attribute *p;
-	  
-		return 0;
-	}	
+  }else{
+    printf("OK\n");
+    
+    Attribute *p = rootPtr->node->course.attr;
+    while(p)
+      {
+	printf("%d \n",p->type);
+	p = p->next;
+	}
+    
+    return 0;
+  }	
 } 
