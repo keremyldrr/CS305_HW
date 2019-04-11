@@ -2,7 +2,7 @@
 #define  HW4_HEADER
  
 
-typedef enum {COURSE, CONSTRAINT,MEETING,CODE,TYPE,NAME,CLASS,ITEM}ELEMTYPE;//MORE TO COME
+typedef enum {YARAK,COURSE, CONSTRAINT,MEETING,CODE,TYPE,NAME,CLASS,ITEM,SECTION,CAPACITY,CRN,INSTRUCTOR}ELEMTYPE;//MORE TO COME
 
 
 typedef struct Attribute{
@@ -30,9 +30,6 @@ typedef struct classNode{
 
 typedef struct meetNode{
   struct TreeNode *attribs;
-  int start;
-  int end;
-  int day; 
 }meetNode;
 typedef struct{}itemNode;
 typedef union{
