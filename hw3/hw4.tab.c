@@ -75,12 +75,17 @@
   TreeNode * genCourse(Attribute *,TreeNode *);
   TreeNode *mergeClass(TreeNode *,TreeNode *);
   TreeNode *genClass(Attribute *,TreeNode *);
-  Attribute *makeAttr(ELEMTYPE);
+  TreeNode *genMeeting(Attribute *);
+  TreeNode *mergeMeet(TreeNode *,TreeNode *);
+  Attribute *makeAttr(ELEMTYPE,char strink[100]);
   Attribute *connectAttr(Attribute *,Attribute *);
   void printTree(TreeNode *);
+  char *dicty[15] =  {"COURSE", "CONSTRAINT","MEETING","CODE","TYPE","NAME","CLASS","ITEM","SECTION","CAPACITY","CRN","INSTRUCTOR","START","END_T","DAY"};//MORE TO COME     
+
+  int size(char *);
     
 
-#line 84 "hw4.tab.c" /* yacc.c:339  */
+#line 89 "hw4.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -115,33 +120,33 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    tOPEN = 258,
-    tCOURSE = 259,
-    tCLOSE = 260,
-    tEND = 261,
-    tCODE = 262,
-    tCLASS = 263,
-    tNAME = 264,
-    tTYPE = 265,
-    tSTRING = 266,
-    tSECTION = 267,
-    tINSTRUCTOR = 268,
-    tCRN = 269,
-    tCAPACITY = 270,
-    tMEETING = 271,
-    tSELF = 272,
-    tDAY = 273,
-    tSTART = 274,
-    tTIME = 275,
-    tEND_A = 276,
-    tMON = 277,
-    tTUE = 278,
-    tWED = 279,
-    tTHU = 280,
-    tFRI = 281,
-    tCONSTRAINT = 282,
-    tITEM = 283,
-    tNUM = 284
+    tSTRING = 258,
+    tMON = 259,
+    tTUE = 260,
+    tWED = 261,
+    tTHU = 262,
+    tFRI = 263,
+    tNUM = 264,
+    tTIME = 265,
+    tOPEN = 266,
+    tCOURSE = 267,
+    tCLOSE = 268,
+    tEND = 269,
+    tCODE = 270,
+    tCLASS = 271,
+    tNAME = 272,
+    tTYPE = 273,
+    tSECTION = 274,
+    tINSTRUCTOR = 275,
+    tCRN = 276,
+    tCAPACITY = 277,
+    tMEETING = 278,
+    tSELF = 279,
+    tDAY = 280,
+    tSTART = 281,
+    tEND_A = 282,
+    tCONSTRAINT = 283,
+    tITEM = 284
   };
 #endif
 
@@ -150,14 +155,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 19 "hw4.y" /* yacc.c:355  */
+#line 23 "hw4.y" /* yacc.c:355  */
 
-
-  int crn;//buralar degiscek
+  char  str[100];
+  int lineNum;//buralar degiscek
   TreeNode *treeptr;
   Attribute *attr;
 
-#line 161 "hw4.tab.c" /* yacc.c:355  */
+#line 166 "hw4.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -174,7 +179,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 178 "hw4.tab.c" /* yacc.c:358  */
+#line 183 "hw4.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -416,7 +421,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  9
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   77
+#define YYLAST   64
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  30
@@ -474,12 +479,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    43,    43,    43,    44,    44,    45,    45,    46,    47,
-      48,    48,    49,    49,    49,    50,    52,    54,    55,    56,
-      57,    58,    58,    59,    59,    59,    59,    60,    60,    61,
-      62,    63,    64,    64,    65,    65,    65,    66,    66,    66,
-      66,    66,    67,    68,    69,    69,    70,    71,    72,    73,
-      73
+       0,    58,    58,    58,    59,    59,    60,    60,    61,    62,
+      63,    63,    64,    64,    64,    65,    67,    69,    70,    71,
+      72,    73,    73,    74,    74,    74,    74,    75,    75,    76,
+      77,    78,    79,    79,    80,    80,    80,    81,    81,    81,
+      81,    81,    82,    83,    84,    84,    85,    86,    87,    88,
+      88
 };
 #endif
 
@@ -488,15 +493,15 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "tOPEN", "tCOURSE", "tCLOSE", "tEND",
-  "tCODE", "tCLASS", "tNAME", "tTYPE", "tSTRING", "tSECTION",
-  "tINSTRUCTOR", "tCRN", "tCAPACITY", "tMEETING", "tSELF", "tDAY",
-  "tSTART", "tTIME", "tEND_A", "tMON", "tTUE", "tWED", "tTHU", "tFRI",
-  "tCONSTRAINT", "tITEM", "tNUM", "$accept", "prog", "elementList",
-  "element", "beginCourse", "endCourse", "courseAttrList", "courseAttr",
-  "classList", "class", "beginClass", "endClass", "closeClass",
-  "classAttrList", "classAttr", "meetingList", "meeting", "beginMeeting",
-  "endMeeting", "meetingAttrList", "meetingAttr", "day", "beginConstraint",
+  "$end", "error", "$undefined", "tSTRING", "tMON", "tTUE", "tWED",
+  "tTHU", "tFRI", "tNUM", "tTIME", "tOPEN", "tCOURSE", "tCLOSE", "tEND",
+  "tCODE", "tCLASS", "tNAME", "tTYPE", "tSECTION", "tINSTRUCTOR", "tCRN",
+  "tCAPACITY", "tMEETING", "tSELF", "tDAY", "tSTART", "tEND_A",
+  "tCONSTRAINT", "tITEM", "$accept", "prog", "elementList", "element",
+  "beginCourse", "endCourse", "courseAttrList", "courseAttr", "classList",
+  "class", "beginClass", "endClass", "closeClass", "classAttrList",
+  "classAttr", "meetingList", "meeting", "beginMeeting", "endMeeting",
+  "meetingAttrList", "meetingAttr", "day", "beginConstraint",
   "endConstraint", "itemList", "item", "beginItem", "endItem", "itemAttr", YY_NULLPTR
 };
 #endif
@@ -512,10 +517,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -21
+#define YYPACT_NINF -28
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-21)))
+  (!!((Yystate) == (-28)))
 
 #define YYTABLE_NINF -1
 
@@ -526,15 +531,15 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       4,    -4,    14,   -21,     4,    16,    18,     6,    17,   -21,
-     -21,    19,    20,    16,    -3,     0,    23,    18,    -6,    13,
-      21,    22,    25,     6,   -21,   -21,    27,   -21,   -21,    24,
-      26,     5,     7,    33,    -3,   -21,    -2,   -21,   -21,    28,
-      11,    29,   -21,   -21,   -21,   -21,   -21,    36,   -21,   -21,
-     -21,   -21,   -21,    39,   -21,    38,   -21,   -21,   -21,   -21,
-     -21,    31,    42,    39,    -1,   -21,   -21,    37,   -21,   -21,
-     -20,    30,    32,    34,    -1,    44,   -21,   -21,   -21,   -21,
-     -21,   -21,   -21,   -21,   -21,   -21,   -21,   -21
+       2,   -12,    20,   -28,     2,    10,    11,    -3,    12,   -28,
+     -28,     7,    13,    10,   -11,    -5,    14,    11,   -14,    23,
+      26,    27,    18,    -3,   -28,   -28,    21,   -28,   -28,    29,
+      31,    28,    30,    22,   -11,   -28,     8,   -28,   -28,    35,
+      32,    16,   -28,   -28,   -28,   -28,   -28,    33,   -28,   -28,
+     -28,   -28,   -28,    34,   -28,    36,   -28,   -28,   -28,   -28,
+     -28,    19,    37,    34,    -8,   -28,   -28,    38,   -28,   -28,
+      -2,    40,    42,    24,    -8,    43,   -28,   -28,   -28,   -28,
+     -28,   -28,   -28,   -28,   -28,   -28,   -28,   -28
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -556,9 +561,9 @@ static const yytype_uint8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -21,   -21,    40,   -21,   -21,   -21,    35,   -21,    41,   -21,
-     -21,   -21,   -21,    43,   -21,   -10,   -21,   -21,   -21,   -19,
-     -21,   -21,   -21,   -21,    45,   -21,   -21,   -21,   -21
+     -28,   -28,    39,   -28,   -28,   -28,    41,   -28,    44,   -28,
+     -28,   -28,   -28,    25,   -28,   -19,   -28,   -28,   -28,   -27,
+     -28,   -28,   -28,   -28,    45,   -28,   -28,   -28,   -28
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -574,41 +579,39 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       7,    39,    76,    77,    78,    79,    80,     1,    40,    29,
-      30,    31,    32,    19,     9,    20,    21,    70,    71,    11,
-      72,    15,    24,     8,    42,    55,    26,    25,    35,    36,
-      45,    47,    43,    44,    50,    48,    51,    49,    52,    56,
-      57,    60,    61,    65,    10,    75,    58,    66,    67,    87,
-      82,    84,    83,    69,    28,    86,     0,     0,    46,     0,
-       0,     0,    38,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,    54
+       7,    39,    76,    77,    78,    79,    80,    40,    29,    30,
+      31,    32,    19,     1,    20,    21,     8,    70,    71,    72,
+       9,    11,    15,    25,    35,    24,    42,    26,    36,    43,
+      44,    45,    48,    47,    49,    52,    55,    50,    56,    51,
+      58,    57,    66,    10,    69,    61,    60,    86,    84,    65,
+      82,    67,    83,     0,    75,     0,    87,    28,     0,    54,
+       0,     0,    38,     0,    46
 };
 
 static const yytype_int8 yycheck[] =
 {
-       4,     7,    22,    23,    24,    25,    26,     3,    14,    12,
-      13,    14,    15,     7,     0,     9,    10,    18,    19,     3,
-      21,     3,     5,    27,    11,    27,     6,     8,    28,     6,
-       5,     4,    11,    11,    29,    11,    29,    11,     5,    11,
-      29,     5,     3,     5,     4,     8,    17,    16,     6,     5,
-      20,    17,    20,    63,    13,    74,    -1,    -1,    23,    -1,
-      -1,    -1,    17,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    34
+      12,    15,     4,     5,     6,     7,     8,    21,    19,    20,
+      21,    22,    15,    11,    17,    18,    28,    25,    26,    27,
+       0,    11,    11,    16,    29,    13,     3,    14,    14,     3,
+       3,    13,     3,    12,     3,    13,    28,     9,     3,     9,
+      24,     9,    23,     4,    63,    11,    13,    74,    24,    13,
+      10,    14,    10,    -1,    16,    -1,    13,    13,    -1,    34,
+      -1,    -1,    17,    -1,    23
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,    31,    32,    33,    34,    52,     4,    27,     0,
-      32,     3,    38,    39,    40,     3,    54,    55,    56,     7,
-       9,    10,    36,    37,     5,     8,     6,    35,    38,    12,
-      13,    14,    15,    43,    44,    28,     6,    53,    54,     7,
-      14,    58,    11,    11,    11,     5,    36,     4,    11,    11,
-      29,    29,     5,    41,    43,    27,    11,    29,    17,    57,
-       5,     3,    45,    46,    47,     5,    16,     6,    42,    45,
-      18,    19,    21,    49,    50,     8,    22,    23,    24,    25,
-      26,    51,    20,    20,    17,    48,    49,     5
+       0,    11,    31,    32,    33,    34,    52,    12,    28,     0,
+      32,    11,    38,    39,    40,    11,    54,    55,    56,    15,
+      17,    18,    36,    37,    13,    16,    14,    35,    38,    19,
+      20,    21,    22,    43,    44,    29,    14,    53,    54,    15,
+      21,    58,     3,     3,     3,    13,    36,    12,     3,     3,
+       9,     9,    13,    41,    43,    28,     3,     9,    24,    57,
+      13,    11,    45,    46,    47,    13,    23,    14,    42,    45,
+      25,    26,    27,    49,    50,    16,     4,     5,     6,     7,
+       8,    51,    10,    10,    24,    48,    49,    13
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -1307,127 +1310,157 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 44 "hw4.y" /* yacc.c:1646  */
+#line 59 "hw4.y" /* yacc.c:1646  */
     {rootPtr = (yyvsp[0].treeptr);}
-#line 1313 "hw4.tab.c" /* yacc.c:1646  */
+#line 1316 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 45 "hw4.y" /* yacc.c:1646  */
+#line 60 "hw4.y" /* yacc.c:1646  */
     {(yyval.treeptr) = genCourse((yyvsp[-2].attr),(yyvsp[-1].treeptr));}
-#line 1319 "hw4.tab.c" /* yacc.c:1646  */
+#line 1322 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 46 "hw4.y" /* yacc.c:1646  */
+#line 61 "hw4.y" /* yacc.c:1646  */
     {(yyval.attr) = (yyvsp[-1].attr);}
-#line 1325 "hw4.tab.c" /* yacc.c:1646  */
+#line 1328 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 48 "hw4.y" /* yacc.c:1646  */
+#line 63 "hw4.y" /* yacc.c:1646  */
     { (yyval.attr) = connectAttr((yyvsp[0].attr),NULL); }
-#line 1331 "hw4.tab.c" /* yacc.c:1646  */
+#line 1334 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 48 "hw4.y" /* yacc.c:1646  */
+#line 63 "hw4.y" /* yacc.c:1646  */
     {(yyval.attr) = connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
-#line 1337 "hw4.tab.c" /* yacc.c:1646  */
+#line 1340 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 49 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(CODE);}
-#line 1343 "hw4.tab.c" /* yacc.c:1646  */
+#line 64 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = makeAttr(CODE,(yyvsp[0].str));}
+#line 1346 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 49 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr)=makeAttr(NAME);}
-#line 1349 "hw4.tab.c" /* yacc.c:1646  */
+#line 64 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr)=makeAttr(NAME,(yyvsp[0].str));}
+#line 1352 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 49 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr)=makeAttr(TYPE); }
-#line 1355 "hw4.tab.c" /* yacc.c:1646  */
+#line 64 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr)=makeAttr(TYPE,(yyvsp[0].str)); }
+#line 1358 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 50 "hw4.y" /* yacc.c:1646  */
-    {(yyval.treeptr) =mergeClass((yyvsp[0].treeptr),NULL);printf("generate %d \n",(yyvsp[0].treeptr)->thisElemType);}
-#line 1361 "hw4.tab.c" /* yacc.c:1646  */
+#line 65 "hw4.y" /* yacc.c:1646  */
+    {(yyval.treeptr) =mergeClass((yyvsp[0].treeptr),NULL);}
+#line 1364 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 52 "hw4.y" /* yacc.c:1646  */
-    {(yyval.treeptr) = mergeClass((yyvsp[-1].treeptr),(yyvsp[0].treeptr));printf("merge %d\n",((yyvsp[0].treeptr)->thisElemType));}
-#line 1367 "hw4.tab.c" /* yacc.c:1646  */
+#line 67 "hw4.y" /* yacc.c:1646  */
+    {(yyval.treeptr) = mergeClass((yyvsp[-1].treeptr),(yyvsp[0].treeptr));}
+#line 1370 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 54 "hw4.y" /* yacc.c:1646  */
-    {(yyval.treeptr) = genClass((yyvsp[-3].attr),NULL);}
-#line 1373 "hw4.tab.c" /* yacc.c:1646  */
+#line 69 "hw4.y" /* yacc.c:1646  */
+    {(yyval.treeptr) = genClass((yyvsp[-3].attr),(yyvsp[-1].treeptr));}
+#line 1376 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 58 "hw4.y" /* yacc.c:1646  */
+#line 73 "hw4.y" /* yacc.c:1646  */
     {(yyval.attr) = connectAttr((yyvsp[0].attr),NULL);}
-#line 1379 "hw4.tab.c" /* yacc.c:1646  */
+#line 1382 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 58 "hw4.y" /* yacc.c:1646  */
+#line 73 "hw4.y" /* yacc.c:1646  */
     {(yyval.attr)= connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
-#line 1385 "hw4.tab.c" /* yacc.c:1646  */
+#line 1388 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 59 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(SECTION); printf("%d \n",(yyval.attr)->type);}
-#line 1391 "hw4.tab.c" /* yacc.c:1646  */
+#line 74 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = makeAttr(SECTION,(yyvsp[0].str));}
+#line 1394 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 59 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(INSTRUCTOR); }
-#line 1397 "hw4.tab.c" /* yacc.c:1646  */
+#line 74 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = makeAttr(INSTRUCTOR,(yyvsp[0].str)); }
+#line 1400 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 59 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(CRN);}
-#line 1403 "hw4.tab.c" /* yacc.c:1646  */
+#line 74 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = makeAttr(CRN,(yyvsp[0].str));}
+#line 1406 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 59 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(CAPACITY);}
-#line 1409 "hw4.tab.c" /* yacc.c:1646  */
+#line 74 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = makeAttr(CAPACITY,(yyvsp[0].str));}
+#line 1412 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 60 "hw4.y" /* yacc.c:1646  */
-    {(yyval.treeptr)=NULL;}
-#line 1415 "hw4.tab.c" /* yacc.c:1646  */
+#line 75 "hw4.y" /* yacc.c:1646  */
+    {(yyval.treeptr)=mergeMeet((yyvsp[0].treeptr),NULL);}
+#line 1418 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 60 "hw4.y" /* yacc.c:1646  */
-    {(yyval.treeptr) = NULL;}
-#line 1421 "hw4.tab.c" /* yacc.c:1646  */
+#line 75 "hw4.y" /* yacc.c:1646  */
+    {(yyval.treeptr) = mergeMeet((yyvsp[-1].treeptr),(yyvsp[0].treeptr));}
+#line 1424 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 61 "hw4.y" /* yacc.c:1646  */
-    {(yyval.treeptr)=NULL;}
-#line 1427 "hw4.tab.c" /* yacc.c:1646  */
+#line 76 "hw4.y" /* yacc.c:1646  */
+    {(yyval.treeptr)=genMeeting((yyvsp[-1].attr));}
+#line 1430 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 32:
+#line 79 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = connectAttr((yyvsp[0].attr),NULL);}
+#line 1436 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 33:
+#line 79 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
+#line 1442 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 34:
+#line 80 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = makeAttr(DAY,(yyvsp[0].str));}
+#line 1448 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 35:
+#line 80 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = makeAttr(START,(yyvsp[0].str));}
+#line 1454 "hw4.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 36:
+#line 80 "hw4.y" /* yacc.c:1646  */
+    {(yyval.attr) = makeAttr(END_T,(yyvsp[0].str));}
+#line 1460 "hw4.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1431 "hw4.tab.c" /* yacc.c:1646  */
+#line 1464 "hw4.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1655,13 +1688,17 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 74 "hw4.y" /* yacc.c:1906  */
+#line 89 "hw4.y" /* yacc.c:1906  */
 
-Attribute * makeAttr(ELEMTYPE elem){
-
+Attribute * makeAttr(ELEMTYPE elem,char strink[100]){
+  
   Attribute *ret = (Attribute *)malloc(sizeof(Attribute));
   ret->type = elem;
   ret->next = NULL;
+  //&ret->str[0] = (char *)malloc(sizeof(char)*100);
+  strcpy(ret->str,strink);
+  printf("%s %s \n ",ret->str,dicty[elem]);
+  memset(&strink[0], 0, sizeof(char)*100);
 
   return ret;
 
@@ -1678,82 +1715,19 @@ Attribute * connectAttr(Attribute *a1,Attribute *a2){
 }
  TreeNode* genCourse(Attribute *attributes,TreeNode *classes)
 {
-  /*while(attributes)
-    {
-      printf("ATTR  %d\n ",attributes->type);
-      attributes= attributes->next;
-    }
-   while(classes)
-    {
-      printf("CLS  %d\n ",classes->thisElemType);
-
-      classes= classes->next;
-      }*/
-  
   TreeNode *ret = (struct TreeNode *)malloc(sizeof(TreeNode));
   ret ->thisElemType = COURSE;
   ret->node = (wildCard *)malloc(sizeof(wildCard));
-  Attribute *p = (Attribute *)malloc(sizeof(Attribute));
-  p->type = attributes->type;
-  ret->node->course.attr = p;
-  attributes = attributes->next;
-  
-  while(attributes != NULL)
-    {
-      p->next = (Attribute *)malloc(sizeof(Attribute));
-      
-      p->next->type =  attributes->type;
-      p = p->next;
-      attributes = attributes->next;
-      
-      
-    }
-  
-  //
-  
-  TreeNode *p2 = (TreeNode *)malloc(sizeof(TreeNode));
-  ret->node->course.classes = p2;
-  p2->thisElemType = CLASS;
-  p2->node = (wildCard *)malloc(sizeof(wildCard));
-  p2->node->class.attr = classes->node->class.attr;
-  classes = classes->next;
-  printf("ks");
-  while(classes != NULL)
-    {
-      printf("ks");
-      p2->next = (TreeNode *)malloc(sizeof(TreeNode));
-      
-      p2->next->thisElemType =  CLASS;
-      p2->next->node = (wildCard *)malloc(sizeof(wildCard));
-      p2->next->node->class.attr = classes->node->class.attr;
-      p2 = p2->next;
-
-      classes = classes->next;
-      
-      
-    }
-
-
-
-    
+  ret->node->course.attr =attributes;
+  ret->node->course.classes = classes;
  
   return ret;
 }
 
 
 TreeNode *mergeClass(TreeNode *a1,TreeNode *a2){
-
-  //TreeNode *ptr = (TreeNode *)malloc(sizeof(TreeNode));
-  printf("anan %d %d \n ",(a1 == NULL),(a2 == NULL)); 
-  // ptr->node = a1->node;
-  //if(a2 == NULL)
-  //  ptr->next= NULL;
-  //else
-  //ptr->next = a2;
-    //memmove(ptr->next,a2,sizeof(TreeNode));
+  
   a1->next = a2;
-  //birden fazla class problemli, meetingler ve itemlardan sonra ilk kisim hallolucak.
-  //birden fazla course da dene!!!
   return a1;
   
 }
@@ -1765,29 +1739,49 @@ TreeNode *genClass(Attribute * attributes,TreeNode *meetings){
   Attribute *p = (Attribute *)malloc(sizeof(Attribute));
   
   ret->node = (wildCard *)malloc(sizeof(wildCard));
-  p = attributes;
-  ret->node->class.attr = p;
-  p->type = attributes->type;
   
-  attributes = attributes->next;
-  ret->next = NULL;
-  ret->node->class.meetings = meetings;
-  while(attributes != NULL)
-    {
-      
-      p->next = (Attribute *)malloc(sizeof(Attribute));
-      
-      p->next->type =  attributes->type;
-      p = p->next;
-      attributes = attributes->next;
+  ret->node->class.attr = attributes;
 
-      
-    }
+  ret->node->class.meetings = meetings;
+
 
   //set meetings here
   return ret;
 }
+TreeNode *mergeMeet(TreeNode *a1,TreeNode *a2){
+  a1->next = a2;
+  return a1;
+  
+}
+TreeNode *genMeeting(Attribute * attributes){
+  
+  TreeNode *ret = (TreeNode *)malloc(sizeof(TreeNode));
+  ret->thisElemType = MEETING;
+  
+ 
+  
+  ret->node = (wildCard *)malloc(sizeof(wildCard));
+ 
+  ret->node->meeting.attr = attributes;  
+  return ret;
+}
+int size(char *ptr){
+  //variable used to access the subsequent array elements.
+  int offset = 0;
+  //variable that counts the number of elements in your array
+  int count = 0;
 
+  //While loop that tests whether the end of the array has been reached
+  while (*(ptr + offset) != '\0')
+    {
+      //increment the count variable
+      ++count;
+      //advance to the next element of the array
+      ++offset;
+    }
+    //return the size of the array
+  return count;
+}
 int main(){
   
   if(yyparse()){
@@ -1803,8 +1797,21 @@ int main(){
 	Attribute *pp = p->node->class.attr;
 	while(pp != NULL)
 	  {
-	    printf("attr %d \n",pp->type);
+	    printf("clsattr %d \n",pp->type);
 	    pp = pp->next;
+	  }
+	TreeNode *pp2 = p->node->class.meetings;
+	while(pp2!= NULL)
+	  {
+
+	    Attribute * pp3 = pp2->node->meeting.attr;
+	    while(pp3 != NULL)
+	      {
+		//		printf("meetattr %s \n",pp3->str);
+		pp3 = pp3->next;
+	      }
+	    printf("\n");
+	    pp2 = pp2->next;
 	  }
 	p = p->next;
 	}

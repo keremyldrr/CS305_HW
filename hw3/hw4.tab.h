@@ -45,33 +45,33 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    tOPEN = 258,
-    tCOURSE = 259,
-    tCLOSE = 260,
-    tEND = 261,
-    tCODE = 262,
-    tCLASS = 263,
-    tNAME = 264,
-    tTYPE = 265,
-    tSTRING = 266,
-    tSECTION = 267,
-    tINSTRUCTOR = 268,
-    tCRN = 269,
-    tCAPACITY = 270,
-    tMEETING = 271,
-    tSELF = 272,
-    tDAY = 273,
-    tSTART = 274,
-    tTIME = 275,
-    tEND_A = 276,
-    tMON = 277,
-    tTUE = 278,
-    tWED = 279,
-    tTHU = 280,
-    tFRI = 281,
-    tCONSTRAINT = 282,
-    tITEM = 283,
-    tNUM = 284
+    tSTRING = 258,
+    tMON = 259,
+    tTUE = 260,
+    tWED = 261,
+    tTHU = 262,
+    tFRI = 263,
+    tNUM = 264,
+    tTIME = 265,
+    tOPEN = 266,
+    tCOURSE = 267,
+    tCLOSE = 268,
+    tEND = 269,
+    tCODE = 270,
+    tCLASS = 271,
+    tNAME = 272,
+    tTYPE = 273,
+    tSECTION = 274,
+    tINSTRUCTOR = 275,
+    tCRN = 276,
+    tCAPACITY = 277,
+    tMEETING = 278,
+    tSELF = 279,
+    tDAY = 280,
+    tSTART = 281,
+    tEND_A = 282,
+    tCONSTRAINT = 283,
+    tITEM = 284
   };
 #endif
 
@@ -80,10 +80,10 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 19 "hw4.y" /* yacc.c:1909  */
+#line 23 "hw4.y" /* yacc.c:1909  */
 
-
-  int crn;//buralar degiscek
+  char  str[100];
+  int lineNum;//buralar degiscek
   TreeNode *treeptr;
   Attribute *attr;
 

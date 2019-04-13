@@ -1,4 +1,4 @@
-
+ 
 %{
 #include <stdio.h>
 #include <string.h>
@@ -11,14 +11,18 @@
   TreeNode * genCourse(Attribute *,TreeNode *);
   TreeNode *mergeClass(TreeNode *,TreeNode *);
   TreeNode *genClass(Attribute *,TreeNode *);
-  Attribute *makeAttr(ELEMTYPE);
+  TreeNode *genMeeting(Attribute *);
+  TreeNode *mergeMeet(TreeNode *,TreeNode *);
+  Attribute *makeAttr(ELEMTYPE,char strink[100]);
   Attribute *connectAttr(Attribute *,Attribute *);
   void printTree(TreeNode *);
+  char *dicty[15] =  {"COURSE", "CONSTRAINT","MEETING","CODE","TYPE","NAME","CLASS","ITEM","SECTION","CAPACITY","CRN","INSTRUCTOR","START","END_T","DAY"};//MORE TO COME     
+
+  int size(char *);
     %}
-
 %union {
-
-  int crn;//buralar degiscek
+  char  str[100];
+  int lineNum;//buralar degiscek
   TreeNode *treeptr;
   Attribute *attr;
 }
@@ -37,8 +41,19 @@
 %type <attr> classAttr
 %type <attr> meetingAttrList
 %type <attr> meetingAttr
-%token tOPEN tCOURSE tCLOSE tEND tCODE tCLASS  tNAME tTYPE tSTRING tSECTION  tINSTRUCTOR tCRN  tCAPACITY tMEETING tSELF tDAY tSTART tTIME  tEND_A tMON  tTUE  tWED  tTHU  tFRI tCONSTRAINT tITEM 
-%token <crn> tNUM
+
+%type <str> day
+
+%token <str> tSTRING
+%token <str> tMON
+%token <str> tTUE
+%token <str> tWED
+%token <str> tTHU
+%token <str> tFRI
+%token <str> tNUM
+%token <str> tTIME
+%token tOPEN tCOURSE tCLOSE tEND tCODE tCLASS  tNAME tTYPE  tSECTION  tINSTRUCTOR tCRN  tCAPACITY tMEETING tSELF tDAY tSTART tEND_A tCONSTRAINT tITEM
+
 %%
 prog :  elementList | ;
 elementList :  element{rootPtr = $1;} | element elementList;
@@ -46,24 +61,24 @@ element : beginCourse classList endCourse{$$ = genCourse($1,$2);} | beginConstra
 beginCourse : tOPEN tCOURSE courseAttrList tCLOSE {$$ = $3;};
 endCourse : tEND tCOURSE tCLOSE;
 courseAttrList :  courseAttr{ $$ = connectAttr($1,NULL); } |  courseAttr  courseAttrList {$$ = connectAttr($1,$2);};
-courseAttr : tCODE tSTRING {$$ = makeAttr(CODE);}| tNAME tSTRING{$$=makeAttr(NAME);}|tTYPE tSTRING{$$=makeAttr(TYPE); };
-classList : class{$$ =mergeClass($1,NULL);printf("generate %d \n",$1->thisElemType);}
+courseAttr : tCODE tSTRING {$$ = makeAttr(CODE,$2);}| tNAME tSTRING{$$=makeAttr(NAME,$2);}|tTYPE tSTRING{$$=makeAttr(TYPE,$2); };
+classList : class{$$ =mergeClass($1,NULL);}
 
-| class classList{$$ = mergeClass($1,$2);printf("merge %d\n",($2->thisElemType));};
+| class classList{$$ = mergeClass($1,$2);};
 
-class :  beginClass classAttrList endClass meetingList closeClass {$$ = genClass($2,NULL);};
+class :  beginClass classAttrList endClass meetingList closeClass {$$ = genClass($2,$4);};
 beginClass  : tOPEN tCLASS;
 endClass :  tCLOSE;
 closeClass : tEND tCLASS tCLOSE;
 classAttrList :  classAttr {$$ = connectAttr($1,NULL);} | classAttr classAttrList {$$= connectAttr($1,$2);};
-classAttr : tSECTION tSTRING {$$ = makeAttr(SECTION); printf("%d \n",$$->type);}| tINSTRUCTOR tSTRING {$$ = makeAttr(INSTRUCTOR); }|tCRN tNUM {$$ = makeAttr(CRN);}| tCAPACITY tNUM {$$ = makeAttr(CAPACITY);};
- meetingList : meeting {$$=NULL;} |meeting  meetingList {$$ = NULL;};
- meeting : beginMeeting meetingAttrList endMeeting{$$=NULL;};
+classAttr : tSECTION tSTRING {$$ = makeAttr(SECTION,$2);}| tINSTRUCTOR tSTRING {$$ = makeAttr(INSTRUCTOR,$2); }|tCRN tNUM {$$ = makeAttr(CRN,$2);}| tCAPACITY tNUM {$$ = makeAttr(CAPACITY,$2);};
+meetingList : meeting {$$=mergeMeet($1,NULL);} |meeting  meetingList {$$ = mergeMeet($1,$2);};
+meeting : beginMeeting meetingAttrList endMeeting{$$=genMeeting($2);};
 beginMeeting :  tOPEN tMEETING ;
 endMeeting :tSELF ;
-meetingAttrList : meetingAttr | meetingAttr meetingAttrList;
-meetingAttr : tDAY day | tSTART tTIME | tEND_A tTIME;
-day : tMON | tTUE | tWED | tTHU | tFRI;
+meetingAttrList : meetingAttr{$$ = connectAttr($1,NULL);} | meetingAttr meetingAttrList {$$ = connectAttr($1,$2);};
+meetingAttr : tDAY day {$$ = makeAttr(DAY,$2);} | tSTART tTIME {$$ = makeAttr(START,$2);} | tEND_A tTIME{$$ = makeAttr(END_T,$2);};
+day : tMON  | tTUE  | tWED  | tTHU | tFRI;
 beginConstraint : tOPEN tCONSTRAINT tCLOSE;
 endConstraint : tEND tCONSTRAINT  tCLOSE;
 itemList :  item | item itemList;
@@ -72,11 +87,15 @@ beginItem : tOPEN tITEM;
 endItem : tSELF;
 itemAttr: tCODE tSTRING | tCRN tNUM ;
 %%
-Attribute * makeAttr(ELEMTYPE elem){
-
+Attribute * makeAttr(ELEMTYPE elem,char strink[100]){
+  
   Attribute *ret = (Attribute *)malloc(sizeof(Attribute));
   ret->type = elem;
   ret->next = NULL;
+  //&ret->str[0] = (char *)malloc(sizeof(char)*100);
+  strcpy(ret->str,strink);
+  printf("%s %s \n ",ret->str,dicty[elem]);
+  memset(&strink[0], 0, sizeof(char)*100);
 
   return ret;
 
@@ -93,82 +112,19 @@ Attribute * connectAttr(Attribute *a1,Attribute *a2){
 }
  TreeNode* genCourse(Attribute *attributes,TreeNode *classes)
 {
-  /*while(attributes)
-    {
-      printf("ATTR  %d\n ",attributes->type);
-      attributes= attributes->next;
-    }
-   while(classes)
-    {
-      printf("CLS  %d\n ",classes->thisElemType);
-
-      classes= classes->next;
-      }*/
-  
   TreeNode *ret = (struct TreeNode *)malloc(sizeof(TreeNode));
   ret ->thisElemType = COURSE;
   ret->node = (wildCard *)malloc(sizeof(wildCard));
-  Attribute *p = (Attribute *)malloc(sizeof(Attribute));
-  p->type = attributes->type;
-  ret->node->course.attr = p;
-  attributes = attributes->next;
-  
-  while(attributes != NULL)
-    {
-      p->next = (Attribute *)malloc(sizeof(Attribute));
-      
-      p->next->type =  attributes->type;
-      p = p->next;
-      attributes = attributes->next;
-      
-      
-    }
-  
-  //
-  
-  TreeNode *p2 = (TreeNode *)malloc(sizeof(TreeNode));
-  ret->node->course.classes = p2;
-  p2->thisElemType = CLASS;
-  p2->node = (wildCard *)malloc(sizeof(wildCard));
-  p2->node->class.attr = classes->node->class.attr;
-  classes = classes->next;
-  printf("ks");
-  while(classes != NULL)
-    {
-      printf("ks");
-      p2->next = (TreeNode *)malloc(sizeof(TreeNode));
-      
-      p2->next->thisElemType =  CLASS;
-      p2->next->node = (wildCard *)malloc(sizeof(wildCard));
-      p2->next->node->class.attr = classes->node->class.attr;
-      p2 = p2->next;
-
-      classes = classes->next;
-      
-      
-    }
-
-
-
-    
+  ret->node->course.attr =attributes;
+  ret->node->course.classes = classes;
  
   return ret;
 }
 
 
 TreeNode *mergeClass(TreeNode *a1,TreeNode *a2){
-
-  //TreeNode *ptr = (TreeNode *)malloc(sizeof(TreeNode));
-  printf("anan %d %d \n ",(a1 == NULL),(a2 == NULL)); 
-  // ptr->node = a1->node;
-  //if(a2 == NULL)
-  //  ptr->next= NULL;
-  //else
-  //ptr->next = a2;
-    //memmove(ptr->next,a2,sizeof(TreeNode));
+  
   a1->next = a2;
-  //birden fazla class problemli, meetingler ve itemlardan sonra ilk kisim hallolucak.
-  //birden fazla course da dene!!!
   return a1;
   
 }
@@ -180,29 +136,49 @@ TreeNode *genClass(Attribute * attributes,TreeNode *meetings){
   Attribute *p = (Attribute *)malloc(sizeof(Attribute));
   
   ret->node = (wildCard *)malloc(sizeof(wildCard));
-  p = attributes;
-  ret->node->class.attr = p;
-  p->type = attributes->type;
   
-  attributes = attributes->next;
-  ret->next = NULL;
-  ret->node->class.meetings = meetings;
-  while(attributes != NULL)
-    {
-      
-      p->next = (Attribute *)malloc(sizeof(Attribute));
-      
-      p->next->type =  attributes->type;
-      p = p->next;
-      attributes = attributes->next;
+  ret->node->class.attr = attributes;
 
-      
-    }
+  ret->node->class.meetings = meetings;
+
 
   //set meetings here
   return ret;
 }
+TreeNode *mergeMeet(TreeNode *a1,TreeNode *a2){
+  a1->next = a2;
+  return a1;
+  
+}
+TreeNode *genMeeting(Attribute * attributes){
+  
+  TreeNode *ret = (TreeNode *)malloc(sizeof(TreeNode));
+  ret->thisElemType = MEETING;
+  
+ 
+  
+  ret->node = (wildCard *)malloc(sizeof(wildCard));
+ 
+  ret->node->meeting.attr = attributes;  
+  return ret;
+}
+int size(char *ptr){
+  //variable used to access the subsequent array elements.
+  int offset = 0;
+  //variable that counts the number of elements in your array
+  int count = 0;
 
+  //While loop that tests whether the end of the array has been reached
+  while (*(ptr + offset) != '\0')
+    {
+      //increment the count variable
+      ++count;
+      //advance to the next element of the array
+      ++offset;
+    }
+    //return the size of the array
+  return count;
+}
 int main(){
   
   if(yyparse()){
@@ -218,8 +194,21 @@ int main(){
 	Attribute *pp = p->node->class.attr;
 	while(pp != NULL)
 	  {
-	    printf("attr %d \n",pp->type);
+	    printf("clsattr %d \n",pp->type);
 	    pp = pp->next;
+	  }
+	TreeNode *pp2 = p->node->class.meetings;
+	while(pp2!= NULL)
+	  {
+
+	    Attribute * pp3 = pp2->node->meeting.attr;
+	    while(pp3 != NULL)
+	      {
+		//		printf("meetattr %s \n",pp3->str);
+		pp3 = pp3->next;
+	      }
+	    printf("\n");
+	    pp2 = pp2->next;
 	  }
 	p = p->next;
 	}
