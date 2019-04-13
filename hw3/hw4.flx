@@ -22,12 +22,12 @@ type= return tTYPE;
 section= return tSECTION;
 start= return tSTART;
 day= {return tDAY;}
-M { yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext);return tMON;}
-T {yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return tTUE;}
-R {yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return tTHU;}
+M { yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext);return tMON;}
+T {yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return tTUE;}
+R {yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return tTHU;}
 [>] return tCLOSE;
 class return tCLASS;
 constraint return tCONSTRAINT;
@@ -37,24 +37,24 @@ crn= return tCRN;
 capacity= return tCAPACITY;
 end= return tEND_A;
 ['][^']*['] {
-	yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext);
+	yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext);
 
 	return tSTRING;}
 
-["][^"]*["] {yylval.lineNum = noOfLine;
-	strcpy(yylval.str,yytext);
+["][^"]*["] {yylval.coll.lineNum = noOfLine;
+	strcpy(yylval.coll.str,yytext);
 	 return tSTRING;}
 {DIGIT}+ {
-	strcpy(yylval.str,yytext);	
+	strcpy(yylval.coll.str,yytext);	
 	 return tNUM;
 }
-W {yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return  tWED;}
-F { yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return  tFRI;}
-{DIGIT}{2}:{DIGIT}{2} {	yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return tTIME;}
+W {yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return  tWED;}
+F { yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return  tFRI;}
+{DIGIT}{2}:{DIGIT}{2} {	yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return tTIME;}
 \t 
 [ ] 
 

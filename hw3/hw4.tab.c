@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,11 +40,14 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 /* Identify Bison output.  */
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.4"
+#define YYBISON_VERSION "3.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -61,8 +64,8 @@
 
 
 
-/* Copy the first part of user declarations.  */
-#line 2 "hw4.y" /* yacc.c:339  */
+/* First part of user prologue.  */
+#line 2 "hw4.y" /* yacc.c:338  */
 
 #include <stdio.h>
 #include <string.h>
@@ -74,10 +77,12 @@
   TreeNode * genConst(int crn);
   TreeNode * genCourse(Attribute *,TreeNode *);
   TreeNode *mergeClass(TreeNode *,TreeNode *);
+  TreeNode *mergeCourse(TreeNode *,TreeNode *);
   TreeNode *genClass(Attribute *,TreeNode *);
+  int semanticCheck();
   TreeNode *genMeeting(Attribute *);
   TreeNode *mergeMeet(TreeNode *,TreeNode *);
-  Attribute *makeAttr(ELEMTYPE,char strink[100]);
+  Attribute *makeAttr(ELEMTYPE,Tracker);
   Attribute *connectAttr(Attribute *,Attribute *);
   void printTree(TreeNode *);
   char *dicty[15] =  {"COURSE", "CONSTRAINT","MEETING","CODE","TYPE","NAME","CLASS","ITEM","SECTION","CAPACITY","CRN","INSTRUCTOR","START","END_T","DAY"};//MORE TO COME     
@@ -85,13 +90,16 @@
   int size(char *);
     
 
-#line 89 "hw4.tab.c" /* yacc.c:339  */
-
+#line 94 "hw4.tab.c" /* yacc.c:338  */
 # ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
+#  if defined __cplusplus
+#   if 201103L <= __cplusplus
+#    define YY_NULLPTR nullptr
+#   else
+#    define YY_NULLPTR 0
+#   endif
 #  else
-#   define YY_NULLPTR 0
+#   define YY_NULLPTR ((void*)0)
 #  endif
 # endif
 
@@ -155,14 +163,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 23 "hw4.y" /* yacc.c:355  */
+#line 25 "hw4.y" /* yacc.c:353  */
 
-  char  str[100];
-  int lineNum;//buralar degiscek
+  Tracker coll;
   TreeNode *treeptr;
   Attribute *attr;
 
-#line 166 "hw4.tab.c" /* yacc.c:355  */
+#line 173 "hw4.tab.c" /* yacc.c:353  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -177,9 +184,7 @@ int yyparse (void);
 
 #endif /* !YY_YY_HW4_TAB_H_INCLUDED  */
 
-/* Copy the second part of user declarations.  */
 
-#line 183 "hw4.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -200,13 +205,13 @@ typedef signed char yytype_int8;
 #ifdef YYTYPE_UINT16
 typedef YYTYPE_UINT16 yytype_uint16;
 #else
-typedef unsigned short int yytype_uint16;
+typedef unsigned short yytype_uint16;
 #endif
 
 #ifdef YYTYPE_INT16
 typedef YYTYPE_INT16 yytype_int16;
 #else
-typedef short int yytype_int16;
+typedef short yytype_int16;
 #endif
 
 #ifndef YYSIZE_T
@@ -218,7 +223,7 @@ typedef short int yytype_int16;
 #  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
 #  define YYSIZE_T size_t
 # else
-#  define YYSIZE_T unsigned int
+#  define YYSIZE_T unsigned
 # endif
 #endif
 
@@ -254,15 +259,6 @@ typedef short int yytype_int16;
 # define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
 #endif
 
-#if !defined _Noreturn \
-     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
-# if defined _MSC_VER && 1200 <= _MSC_VER
-#  define _Noreturn __declspec (noreturn)
-# else
-#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
-# endif
-#endif
-
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
 # define YYUSE(E) ((void) (E))
@@ -270,7 +266,7 @@ typedef short int yytype_int16;
 # define YYUSE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
 # define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
     _Pragma ("GCC diagnostic push") \
@@ -438,7 +434,7 @@ union yyalloc
 #define YYMAXUTOK   284
 
 #define YYTRANSLATE(YYX)                                                \
-  ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+  ((unsigned) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, without out-of-bounds checking.  */
@@ -479,12 +475,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    58,    58,    58,    59,    59,    60,    60,    61,    62,
-      63,    63,    64,    64,    64,    65,    67,    69,    70,    71,
-      72,    73,    73,    74,    74,    74,    74,    75,    75,    76,
-      77,    78,    79,    79,    80,    80,    80,    81,    81,    81,
-      81,    81,    82,    83,    84,    84,    85,    86,    87,    88,
-      88
+       0,    59,    59,    59,    60,    60,    61,    61,    62,    63,
+      64,    64,    65,    65,    65,    66,    68,    70,    71,    72,
+      73,    74,    74,    75,    75,    75,    75,    76,    76,    77,
+      78,    79,    80,    80,    81,    81,    81,    82,    82,    82,
+      82,    82,    83,    84,    85,    85,    86,    87,    88,    89,
+      89
 };
 #endif
 
@@ -704,37 +700,37 @@ do {                                                                      \
 } while (0)
 
 
-/*----------------------------------------.
-| Print this symbol's value on YYOUTPUT.  |
-`----------------------------------------*/
+/*-----------------------------------.
+| Print this symbol's value on YYO.  |
+`-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  FILE *yyo = yyoutput;
-  YYUSE (yyo);
+  FILE *yyoutput = yyo;
+  YYUSE (yyoutput);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
-    YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
+    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
 # endif
   YYUSE (yytype);
 }
 
 
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
+/*---------------------------.
+| Print this symbol on YYO.  |
+`---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  YYFPRINTF (yyoutput, "%s %s (",
+  YYFPRINTF (yyo, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep);
-  YYFPRINTF (yyoutput, ")");
+  yy_symbol_value_print (yyo, yytype, yyvaluep);
+  YYFPRINTF (yyo, ")");
 }
 
 /*------------------------------------------------------------------.
@@ -768,7 +764,7 @@ do {                                                            \
 static void
 yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
 {
-  unsigned long int yylno = yyrline[yyrule];
+  unsigned long yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
   int yyi;
   YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
@@ -901,7 +897,7 @@ yytnamerr (char *yyres, const char *yystr)
   if (! yyres)
     return yystrlen (yystr);
 
-  return yystpcpy (yyres, yystr) - yyres;
+  return (YYSIZE_T) (yystpcpy (yyres, yystr) - yyres);
 }
 # endif
 
@@ -994,6 +990,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
       case N:                               \
         yyformat = S;                       \
       break
+    default: /* Avoid compiler warnings. */
       YYCASE_(0, YY_("syntax error"));
       YYCASE_(1, YY_("syntax error, unexpected %s"));
       YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
@@ -1142,12 +1139,12 @@ yyparse (void)
   yyssp++;
 
  yysetstate:
-  *yyssp = yystate;
+  *yyssp = (yytype_int16) yystate;
 
   if (yyss + yystacksize - 1 <= yyssp)
     {
       /* Get the current used size of the three stacks, in elements.  */
-      YYSIZE_T yysize = yyssp - yyss + 1;
+      YYSIZE_T yysize = (YYSIZE_T) (yyssp - yyss + 1);
 
 #ifdef yyoverflow
       {
@@ -1165,7 +1162,6 @@ yyparse (void)
                     &yyss1, yysize * sizeof (*yyssp),
                     &yyvs1, yysize * sizeof (*yyvsp),
                     &yystacksize);
-
         yyss = yyss1;
         yyvs = yyvs1;
       }
@@ -1199,7 +1195,7 @@ yyparse (void)
       yyvsp = yyvs + yysize - 1;
 
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
-                  (unsigned long int) yystacksize));
+                  (unsigned long) yystacksize));
 
       if (yyss + yystacksize - 1 <= yyssp)
         YYABORT;
@@ -1309,158 +1305,170 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 4:
-#line 59 "hw4.y" /* yacc.c:1646  */
+        case 2:
+#line 59 "hw4.y" /* yacc.c:1645  */
     {rootPtr = (yyvsp[0].treeptr);}
-#line 1316 "hw4.tab.c" /* yacc.c:1646  */
+#line 1312 "hw4.tab.c" /* yacc.c:1645  */
+    break;
+
+  case 4:
+#line 60 "hw4.y" /* yacc.c:1645  */
+    {(yyval.treeptr) = mergeCourse((yyvsp[0].treeptr),NULL);}
+#line 1318 "hw4.tab.c" /* yacc.c:1645  */
+    break;
+
+  case 5:
+#line 60 "hw4.y" /* yacc.c:1645  */
+    {(yyval.treeptr) = mergeCourse((yyvsp[-1].treeptr),(yyvsp[0].treeptr)); }
+#line 1324 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 6:
-#line 60 "hw4.y" /* yacc.c:1646  */
+#line 61 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = genCourse((yyvsp[-2].attr),(yyvsp[-1].treeptr));}
-#line 1322 "hw4.tab.c" /* yacc.c:1646  */
+#line 1330 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 8:
-#line 61 "hw4.y" /* yacc.c:1646  */
+#line 62 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = (yyvsp[-1].attr);}
-#line 1328 "hw4.tab.c" /* yacc.c:1646  */
+#line 1336 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 10:
-#line 63 "hw4.y" /* yacc.c:1646  */
+#line 64 "hw4.y" /* yacc.c:1645  */
     { (yyval.attr) = connectAttr((yyvsp[0].attr),NULL); }
-#line 1334 "hw4.tab.c" /* yacc.c:1646  */
+#line 1342 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 11:
-#line 63 "hw4.y" /* yacc.c:1646  */
+#line 64 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
-#line 1340 "hw4.tab.c" /* yacc.c:1646  */
+#line 1348 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 12:
-#line 64 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(CODE,(yyvsp[0].str));}
-#line 1346 "hw4.tab.c" /* yacc.c:1646  */
+#line 65 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(CODE,(yyvsp[0].coll));}
+#line 1354 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 13:
-#line 64 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr)=makeAttr(NAME,(yyvsp[0].str));}
-#line 1352 "hw4.tab.c" /* yacc.c:1646  */
+#line 65 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr)=makeAttr(NAME,(yyvsp[0].coll));}
+#line 1360 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 14:
-#line 64 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr)=makeAttr(TYPE,(yyvsp[0].str)); }
-#line 1358 "hw4.tab.c" /* yacc.c:1646  */
+#line 65 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr)=makeAttr(TYPE,(yyvsp[0].coll)); }
+#line 1366 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 15:
-#line 65 "hw4.y" /* yacc.c:1646  */
+#line 66 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) =mergeClass((yyvsp[0].treeptr),NULL);}
-#line 1364 "hw4.tab.c" /* yacc.c:1646  */
+#line 1372 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 16:
-#line 67 "hw4.y" /* yacc.c:1646  */
+#line 68 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = mergeClass((yyvsp[-1].treeptr),(yyvsp[0].treeptr));}
-#line 1370 "hw4.tab.c" /* yacc.c:1646  */
+#line 1378 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 17:
-#line 69 "hw4.y" /* yacc.c:1646  */
+#line 70 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = genClass((yyvsp[-3].attr),(yyvsp[-1].treeptr));}
-#line 1376 "hw4.tab.c" /* yacc.c:1646  */
+#line 1384 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 21:
-#line 73 "hw4.y" /* yacc.c:1646  */
+#line 74 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = connectAttr((yyvsp[0].attr),NULL);}
-#line 1382 "hw4.tab.c" /* yacc.c:1646  */
+#line 1390 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 22:
-#line 73 "hw4.y" /* yacc.c:1646  */
+#line 74 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr)= connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
-#line 1388 "hw4.tab.c" /* yacc.c:1646  */
+#line 1396 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 23:
-#line 74 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(SECTION,(yyvsp[0].str));}
-#line 1394 "hw4.tab.c" /* yacc.c:1646  */
+#line 75 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(SECTION,(yyvsp[0].coll));}
+#line 1402 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 24:
-#line 74 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(INSTRUCTOR,(yyvsp[0].str)); }
-#line 1400 "hw4.tab.c" /* yacc.c:1646  */
+#line 75 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(INSTRUCTOR,(yyvsp[0].coll)); }
+#line 1408 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 25:
-#line 74 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(CRN,(yyvsp[0].str));}
-#line 1406 "hw4.tab.c" /* yacc.c:1646  */
+#line 75 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(CRN,(yyvsp[0].coll));}
+#line 1414 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 26:
-#line 74 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(CAPACITY,(yyvsp[0].str));}
-#line 1412 "hw4.tab.c" /* yacc.c:1646  */
+#line 75 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(CAPACITY,(yyvsp[0].coll));}
+#line 1420 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 27:
-#line 75 "hw4.y" /* yacc.c:1646  */
+#line 76 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr)=mergeMeet((yyvsp[0].treeptr),NULL);}
-#line 1418 "hw4.tab.c" /* yacc.c:1646  */
+#line 1426 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 28:
-#line 75 "hw4.y" /* yacc.c:1646  */
+#line 76 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = mergeMeet((yyvsp[-1].treeptr),(yyvsp[0].treeptr));}
-#line 1424 "hw4.tab.c" /* yacc.c:1646  */
+#line 1432 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 29:
-#line 76 "hw4.y" /* yacc.c:1646  */
+#line 77 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr)=genMeeting((yyvsp[-1].attr));}
-#line 1430 "hw4.tab.c" /* yacc.c:1646  */
+#line 1438 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 32:
-#line 79 "hw4.y" /* yacc.c:1646  */
+#line 80 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = connectAttr((yyvsp[0].attr),NULL);}
-#line 1436 "hw4.tab.c" /* yacc.c:1646  */
+#line 1444 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 33:
-#line 79 "hw4.y" /* yacc.c:1646  */
+#line 80 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
-#line 1442 "hw4.tab.c" /* yacc.c:1646  */
+#line 1450 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 34:
-#line 80 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(DAY,(yyvsp[0].str));}
-#line 1448 "hw4.tab.c" /* yacc.c:1646  */
+#line 81 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(DAY,(yyvsp[0].coll));}
+#line 1456 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 35:
-#line 80 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(START,(yyvsp[0].str));}
-#line 1454 "hw4.tab.c" /* yacc.c:1646  */
+#line 81 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(START,(yyvsp[0].coll));}
+#line 1462 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 36:
-#line 80 "hw4.y" /* yacc.c:1646  */
-    {(yyval.attr) = makeAttr(END_T,(yyvsp[0].str));}
-#line 1460 "hw4.tab.c" /* yacc.c:1646  */
+#line 81 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(END_T,(yyvsp[0].coll));}
+#line 1468 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
 
-#line 1464 "hw4.tab.c" /* yacc.c:1646  */
+#line 1472 "hw4.tab.c" /* yacc.c:1645  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1485,14 +1493,13 @@ yyreduce:
   /* Now 'shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
      number reduced by.  */
-
-  yyn = yyr1[yyn];
-
-  yystate = yypgoto[yyn - YYNTOKENS] + *yyssp;
-  if (0 <= yystate && yystate <= YYLAST && yycheck[yystate] == *yyssp)
-    yystate = yytable[yystate];
-  else
-    yystate = yydefgoto[yyn - YYNTOKENS];
+  {
+    const int yylhs = yyr1[yyn] - YYNTOKENS;
+    const int yyi = yypgoto[yylhs] + *yyssp;
+    yystate = (0 <= yyi && yyi <= YYLAST && yycheck[yyi] == *yyssp
+               ? yytable[yyi]
+               : yydefgoto[yylhs]);
+  }
 
   goto yynewstate;
 
@@ -1688,17 +1695,169 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 89 "hw4.y" /* yacc.c:1906  */
+#line 90 "hw4.y" /* yacc.c:1903  */
 
-Attribute * makeAttr(ELEMTYPE elem,char strink[100]){
+
+
+int semanticCheck(){
+
+  TreeNode *ptr = rootPtr;
+  while(ptr){
+  if(ptr->thisElemType == COURSE)
+    {
+      printf("here we go \n");
+      courseNode current = ptr->node->course;
+      int codeCount = 0;
+      int nameCount = 0;
+      int typeCount = 0;
+      Attribute *attrs  = current.attr;
+      int ck1 = 0;
+      int ck2 = 0;
+      int ck3 = 0;
+      while(attrs !=NULL){
+	ELEMTYPE ch;
+	ch = attrs->type;
+	if(ch == CODE)
+	  codeCount+=1;
+	else if(ch==NAME)
+	  nameCount +=1;
+	else if(ch == TYPE)
+	  typeCount+=1;
+	attrs = attrs->next;
+      }
+      if(typeCount>1 || typeCount < 1 && ck1 == 0)
+	{
+	  printf("ERROR: course element at line %d has %d occurrences of type type \n",current.attr->lineNumber,typeCount);
+	  ck1=1;
+	}	
+      if(codeCount>1 || codeCount < 1 && ck2 == 0)
+	{
+	  printf("ERROR: course element at line %d has %d occurrences of type code \n",current.attr->lineNumber,codeCount);
+	  ck2 = 1;
+	}
+      if(nameCount>1 || nameCount < 1 && ck3 == 0)
+	{
+	  printf("ERROR: course element at line %d has %d occurrences of type name \n",current.attr->lineNumber,nameCount);
+	  ck3 = 1;
+	}
+      
+      //CLASS CHECK
+
+      TreeNode *cls_list = current.classes;
+      
+      while(cls_list != NULL){
+
+	int section = 0;
+	int inst = 0;
+	int crn = 0;
+	int cap = 0;
+	ck1 = ck2 = ck3 = 0;
+	int ck4 = 0;
+	attrs = cls_list->node->class.attr;
+	while(attrs !=NULL){
+	  ELEMTYPE ch;
+	  ch = attrs->type;
+	  if(ch == SECTION)
+	    section+=1;
+	  else if(ch==INSTRUCTOR)
+	    inst +=1;
+	  else if(ch == CAPACITY)
+	    cap+=1;
+	  else if(ch == CRN)
+	    crn+=1;
+	
+	  attrs = attrs->next;
+	}
+      
+	if(section>1 || section < 1 && ck1 == 0)
+	  {
+	    printf("ERROR: class element at line %d has %d occurrences of type section \n",cls_list->node->class.attr->lineNumber,section);
+	    ck1=1;
+	  }	
+	if(inst>1 || inst < 1 && ck2 == 0)
+	  {
+	    printf("ERROR: class element at line %d has %d occurrences of type instructor \n",cls_list->node->class.attr->lineNumber,inst);
+	    ck2 = 1;
+	  }
+      if(cap>1 || cap < 1 && ck3 == 0)
+	{
+	  printf("ERROR: class element at line %d has %d occurrences of type capacity \n",cls_list->node->class.attr->lineNumber,cap);
+	  ck3 = 1;}
+      if(crn>1 || crn < 1 && ck4 == 0)
+	{
+	  printf("ERROR: class element at line %d has %d occurrences of type name \n",cls_list->node->class.attr->lineNumber,crn);
+	  ck4 = 1;}
+
+      
+      //check for meetings here
+      TreeNode *meety = cls_list->node->class.meetings;
+      while(meety != NULL){
+      int lineNum = meety->node->meeting.attr->lineNumber;
+      int start = 0;
+      int end = 0;
+      int day = 0;
+      ck1 = ck2 = ck3 = 0;
+      attrs = meety->node->meeting.attr;
+      while(attrs != NULL)
+	{
+	  ELEMTYPE ch;
+	  ch = attrs->type;
+	  if(ch == START)
+	    start+=1;
+	  else if(ch==END_T)
+	    end +=1;
+	  else if(ch == DAY)
+	    day+=1;
+	 	
+	  attrs = attrs->next;
+	  
+	}
+      ///////////////////////////////////
+	if(start>1 || start < 1 && ck1 == 0)
+	  {
+	    printf("ERROR: meeting element at line %d has %d occurrences of type start \n",lineNum,start);
+	    ck1=1;
+	  }	
+	if(end>1 || end < 1 && ck2 == 0)
+	  {
+	    printf("ERROR: meeting  element at line %d has %d occurrences of type end \n",lineNum,end);
+	    ck2 = 1;
+	  }
+      if(day>1 || day < 1 && ck3 == 0)
+	{
+	  printf("ERROR: meeting element at line %d has %d occurrences of type day \n",lineNum,day);
+	  ck3 = 1;}
+
+
+
+      ///////////////////////////////////
+      meety = meety->next;
+      }
+      cls_list = cls_list->next;
+      }
+    }
+  else{
+
+    //constraint thingy here
+
+  }
+  ptr = ptr->next;
+  }
+  return 1;
+}
+
+
+Attribute * makeAttr(ELEMTYPE elem,Tracker tr){
   
   Attribute *ret = (Attribute *)malloc(sizeof(Attribute));
   ret->type = elem;
   ret->next = NULL;
+  ret->lineNumber = tr.lineNum;
+  printf("%d NUMLINE",ret->lineNumber);
   //&ret->str[0] = (char *)malloc(sizeof(char)*100);
-  strcpy(ret->str,strink);
+  strcpy(ret->str,tr.str);
   printf("%s %s \n ",ret->str,dicty[elem]);
-  memset(&strink[0], 0, sizeof(char)*100);
+  //  memset(&strink[0], 0, sizeof(char)*100);
 
   return ret;
 
@@ -1726,6 +1885,12 @@ Attribute * connectAttr(Attribute *a1,Attribute *a2){
 
 
 TreeNode *mergeClass(TreeNode *a1,TreeNode *a2){
+  
+  a1->next = a2;
+  return a1;
+  
+}
+TreeNode *mergeCourse(TreeNode *a1,TreeNode *a2){
   
   a1->next = a2;
   return a1;
@@ -1789,8 +1954,10 @@ int main(){
 		return 1;		
   }else{
     printf("OK\n");
+    TreeNode *q = rootPtr;
+    /*while(q){
+    TreeNode *p = q->node->course.classes;
     
-    TreeNode *p = rootPtr->node->course.classes;
     while(p != NULL)
       {
 	printf("%d cls  \n",p->thisElemType);
@@ -1815,7 +1982,9 @@ int main(){
 	  }
 	p = p->next;
 	}
-    
+    q = q->next;
+    }*/
+    semanticCheck();
     return 0;
   }	
 } 

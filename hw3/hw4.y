@@ -10,10 +10,12 @@
   TreeNode * genConst(int crn);
   TreeNode * genCourse(Attribute *,TreeNode *);
   TreeNode *mergeClass(TreeNode *,TreeNode *);
+  TreeNode *mergeCourse(TreeNode *,TreeNode *);
   TreeNode *genClass(Attribute *,TreeNode *);
+  int semanticCheck();
   TreeNode *genMeeting(Attribute *);
   TreeNode *mergeMeet(TreeNode *,TreeNode *);
-  Attribute *makeAttr(ELEMTYPE,char strink[100]);
+  Attribute *makeAttr(ELEMTYPE,Tracker);
   Attribute *connectAttr(Attribute *,Attribute *);
   void printTree(TreeNode *);
   char *dicty[15] =  {"COURSE", "CONSTRAINT","MEETING","CODE","TYPE","NAME","CLASS","ITEM","SECTION","CAPACITY","CRN","INSTRUCTOR","START","END_T","DAY"};//MORE TO COME     
@@ -21,8 +23,7 @@
   int size(char *);
     %}
 %union {
-  char  str[100];
-  int lineNum;//buralar degiscek
+  Tracker coll;
   TreeNode *treeptr;
   Attribute *attr;
 }
@@ -42,21 +43,21 @@
 %type <attr> meetingAttrList
 %type <attr> meetingAttr
 
-%type <str> day
+%type <coll> day
 
-%token <str> tSTRING
-%token <str> tMON
-%token <str> tTUE
-%token <str> tWED
-%token <str> tTHU
-%token <str> tFRI
-%token <str> tNUM
-%token <str> tTIME
+%token <coll> tSTRING
+%token <coll> tMON
+%token <coll> tTUE
+%token <coll> tWED
+%token <coll> tTHU
+%token <coll> tFRI
+%token <coll> tNUM
+%token <coll> tTIME
 %token tOPEN tCOURSE tCLOSE tEND tCODE tCLASS  tNAME tTYPE  tSECTION  tINSTRUCTOR tCRN  tCAPACITY tMEETING tSELF tDAY tSTART tEND_A tCONSTRAINT tITEM
 
 %%
-prog :  elementList | ;
-elementList :  element{rootPtr = $1;} | element elementList;
+prog :  elementList {rootPtr = $1;} | ;
+elementList :  element{$$ = mergeCourse($1,NULL);} | element elementList{$$ = mergeCourse($1,$2); };
 element : beginCourse classList endCourse{$$ = genCourse($1,$2);} | beginConstraint itemList endConstraint;
 beginCourse : tOPEN tCOURSE courseAttrList tCLOSE {$$ = $3;};
 endCourse : tEND tCOURSE tCLOSE;
@@ -87,15 +88,167 @@ beginItem : tOPEN tITEM;
 endItem : tSELF;
 itemAttr: tCODE tSTRING | tCRN tNUM ;
 %%
-Attribute * makeAttr(ELEMTYPE elem,char strink[100]){
+
+
+int semanticCheck(){
+
+  TreeNode *ptr = rootPtr;
+  while(ptr){
+  if(ptr->thisElemType == COURSE)
+    {
+      printf("here we go \n");
+      courseNode current = ptr->node->course;
+      int codeCount = 0;
+      int nameCount = 0;
+      int typeCount = 0;
+      Attribute *attrs  = current.attr;
+      int ck1 = 0;
+      int ck2 = 0;
+      int ck3 = 0;
+      while(attrs !=NULL){
+	ELEMTYPE ch;
+	ch = attrs->type;
+	if(ch == CODE)
+	  codeCount+=1;
+	else if(ch==NAME)
+	  nameCount +=1;
+	else if(ch == TYPE)
+	  typeCount+=1;
+	attrs = attrs->next;
+      }
+      if(typeCount>1 || typeCount < 1 && ck1 == 0)
+	{
+	  printf("ERROR: course element at line %d has %d occurrences of type type \n",current.attr->lineNumber,typeCount);
+	  ck1=1;
+	}	
+      if(codeCount>1 || codeCount < 1 && ck2 == 0)
+	{
+	  printf("ERROR: course element at line %d has %d occurrences of type code \n",current.attr->lineNumber,codeCount);
+	  ck2 = 1;
+	}
+      if(nameCount>1 || nameCount < 1 && ck3 == 0)
+	{
+	  printf("ERROR: course element at line %d has %d occurrences of type name \n",current.attr->lineNumber,nameCount);
+	  ck3 = 1;
+	}
+      
+      //CLASS CHECK
+
+      TreeNode *cls_list = current.classes;
+      
+      while(cls_list != NULL){
+
+	int section = 0;
+	int inst = 0;
+	int crn = 0;
+	int cap = 0;
+	ck1 = ck2 = ck3 = 0;
+	int ck4 = 0;
+	attrs = cls_list->node->class.attr;
+	while(attrs !=NULL){
+	  ELEMTYPE ch;
+	  ch = attrs->type;
+	  if(ch == SECTION)
+	    section+=1;
+	  else if(ch==INSTRUCTOR)
+	    inst +=1;
+	  else if(ch == CAPACITY)
+	    cap+=1;
+	  else if(ch == CRN)
+	    crn+=1;
+	
+	  attrs = attrs->next;
+	}
+      
+	if(section>1 || section < 1 && ck1 == 0)
+	  {
+	    printf("ERROR: class element at line %d has %d occurrences of type section \n",cls_list->node->class.attr->lineNumber,section);
+	    ck1=1;
+	  }	
+	if(inst>1 || inst < 1 && ck2 == 0)
+	  {
+	    printf("ERROR: class element at line %d has %d occurrences of type instructor \n",cls_list->node->class.attr->lineNumber,inst);
+	    ck2 = 1;
+	  }
+      if(cap>1 || cap < 1 && ck3 == 0)
+	{
+	  printf("ERROR: class element at line %d has %d occurrences of type capacity \n",cls_list->node->class.attr->lineNumber,cap);
+	  ck3 = 1;}
+      if(crn>1 || crn < 1 && ck4 == 0)
+	{
+	  printf("ERROR: class element at line %d has %d occurrences of type name \n",cls_list->node->class.attr->lineNumber,crn);
+	  ck4 = 1;}
+
+      
+      //check for meetings here
+      TreeNode *meety = cls_list->node->class.meetings;
+      while(meety != NULL){
+      int lineNum = meety->node->meeting.attr->lineNumber;
+      int start = 0;
+      int end = 0;
+      int day = 0;
+      ck1 = ck2 = ck3 = 0;
+      attrs = meety->node->meeting.attr;
+      while(attrs != NULL)
+	{
+	  ELEMTYPE ch;
+	  ch = attrs->type;
+	  if(ch == START)
+	    start+=1;
+	  else if(ch==END_T)
+	    end +=1;
+	  else if(ch == DAY)
+	    day+=1;
+	 	
+	  attrs = attrs->next;
+	  
+	}
+      ///////////////////////////////////
+	if(start>1 || start < 1 && ck1 == 0)
+	  {
+	    printf("ERROR: meeting element at line %d has %d occurrences of type start \n",lineNum,start);
+	    ck1=1;
+	  }	
+	if(end>1 || end < 1 && ck2 == 0)
+	  {
+	    printf("ERROR: meeting  element at line %d has %d occurrences of type end \n",lineNum,end);
+	    ck2 = 1;
+	  }
+      if(day>1 || day < 1 && ck3 == 0)
+	{
+	  printf("ERROR: meeting element at line %d has %d occurrences of type day \n",lineNum,day);
+	  ck3 = 1;}
+
+
+
+      ///////////////////////////////////
+      meety = meety->next;
+      }
+      cls_list = cls_list->next;
+      }
+    }
+  else{
+
+    //constraint thingy here
+
+  }
+  ptr = ptr->next;
+  }
+  return 1;
+}
+
+
+Attribute * makeAttr(ELEMTYPE elem,Tracker tr){
   
   Attribute *ret = (Attribute *)malloc(sizeof(Attribute));
   ret->type = elem;
   ret->next = NULL;
+  ret->lineNumber = tr.lineNum;
+  printf("%d NUMLINE",ret->lineNumber);
   //&ret->str[0] = (char *)malloc(sizeof(char)*100);
-  strcpy(ret->str,strink);
+  strcpy(ret->str,tr.str);
   printf("%s %s \n ",ret->str,dicty[elem]);
-  memset(&strink[0], 0, sizeof(char)*100);
+  //  memset(&strink[0], 0, sizeof(char)*100);
 
   return ret;
 
@@ -123,6 +276,12 @@ Attribute * connectAttr(Attribute *a1,Attribute *a2){
 
 
 TreeNode *mergeClass(TreeNode *a1,TreeNode *a2){
+  
+  a1->next = a2;
+  return a1;
+  
+}
+TreeNode *mergeCourse(TreeNode *a1,TreeNode *a2){
   
   a1->next = a2;
   return a1;
@@ -186,8 +345,10 @@ int main(){
 		return 1;		
   }else{
     printf("OK\n");
+    TreeNode *q = rootPtr;
+    /*while(q){
+    TreeNode *p = q->node->course.classes;
     
-    TreeNode *p = rootPtr->node->course.classes;
     while(p != NULL)
       {
 	printf("%d cls  \n",p->thisElemType);
@@ -212,7 +373,9 @@ int main(){
 	  }
 	p = p->next;
 	}
-    
+    q = q->next;
+    }*/
+    semanticCheck();
     return 0;
   }	
 } 

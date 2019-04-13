@@ -44,7 +44,12 @@ typedef union{
  meetNode meeting;
  itemNode item;
  }wildCard;
+typedef struct Tracker{
 
+  char str[100];
+  int lineNum;
+
+}Tracker;
 typedef struct TreeNode{
   ELEMTYPE thisElemType;
   wildCard *node;

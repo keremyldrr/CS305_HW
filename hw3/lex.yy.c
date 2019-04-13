@@ -1,5 +1,5 @@
 
-#line 3 "lex.yy.c"
+#line 2 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -515,8 +515,8 @@ char *yytext;
 #include "hw4.tab.h"
 
 int noOfLine = 1;
+#line 518 "lex.yy.c"
 #line 519 "lex.yy.c"
-#line 520 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -735,7 +735,7 @@ YY_DECL
 	{
 #line 12 "hw4.flx"
 
-#line 739 "lex.yy.c"
+#line 738 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -856,20 +856,20 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 25 "hw4.flx"
-{ yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext);return tMON;}
+{ yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext);return tMON;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 27 "hw4.flx"
-{yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return tTUE;}
+{yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return tTUE;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 29 "hw4.flx"
-{yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return tTHU;}
+{yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return tTHU;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
@@ -916,8 +916,8 @@ case 24:
 YY_RULE_SETUP
 #line 39 "hw4.flx"
 {
-	yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext);
+	yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext);
 
 	return tSTRING;}
 	YY_BREAK
@@ -925,35 +925,35 @@ case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
 #line 45 "hw4.flx"
-{yylval.lineNum = noOfLine;
-	strcpy(yylval.str,yytext);
+{yylval.coll.lineNum = noOfLine;
+	strcpy(yylval.coll.str,yytext);
 	 return tSTRING;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 48 "hw4.flx"
 {
-	strcpy(yylval.str,yytext);	
+	strcpy(yylval.coll.str,yytext);	
 	 return tNUM;
 }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 52 "hw4.flx"
-{yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return  tWED;}
+{yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return  tWED;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 54 "hw4.flx"
-{ yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return  tFRI;}
+{ yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return  tFRI;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 56 "hw4.flx"
-{	yylval.lineNum= noOfLine;
-	strcpy(yylval.str,yytext); return tTIME;}
+{	yylval.coll.lineNum= noOfLine;
+	strcpy(yylval.coll.str,yytext); return tTIME;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
@@ -970,7 +970,7 @@ YY_RULE_SETUP
 #line 61 "hw4.flx"
 ECHO;
 	YY_BREAK
-#line 974 "lex.yy.c"
+#line 973 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
