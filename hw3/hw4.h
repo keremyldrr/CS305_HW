@@ -13,10 +13,6 @@ typedef struct Attribute{
   char  str[100];
 }Attribute;
 //this will be corrected
-typedef struct constNode{
-  int crncnt;
-  int codecnt;
-}constNode;
 
 
 typedef struct courseNode{
@@ -25,7 +21,11 @@ typedef struct courseNode{
   int lineNumber;
 }courseNode;
 
+typedef struct constraint{
 
+  struct TreeNode *items;
+
+}constNode;
 typedef struct classNode{
   struct Attribute *attr;
   struct TreeNode *meetings;
@@ -36,7 +36,10 @@ typedef struct meetNode{
   struct Attribute  *attr;
   int lineNumber;
 }meetNode;
-typedef struct{}itemNode;
+typedef struct{
+  Attribute *attr;
+
+}itemNode;
 typedef union{
  courseNode course;
  constNode constraint;

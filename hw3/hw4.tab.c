@@ -74,23 +74,28 @@
     printf("%s\n", s);
   }
   TreeNode *rootPtr;
+  int searchElement(char q[100]);
   TreeNode * genConst(int crn);
   TreeNode * genCourse(Attribute *,TreeNode *);
   TreeNode *mergeClass(TreeNode *,TreeNode *);
+  TreeNode *mergeItem(TreeNode *,TreeNode *);
   TreeNode *mergeCourse(TreeNode *,TreeNode *);
   TreeNode *genClass(Attribute *,TreeNode *);
   int semanticCheck();
+  TreeNode *genConstraint(TreeNode *);
   TreeNode *genMeeting(Attribute *);
+    TreeNode *genItem(Attribute *);
   TreeNode *mergeMeet(TreeNode *,TreeNode *);
-  Attribute *makeAttr(ELEMTYPE,Tracker);
+  Attribute *makeAttr(ELEMTYPE,Tracker,int);
   Attribute *connectAttr(Attribute *,Attribute *);
   void printTree(TreeNode *);
   char *dicty[15] =  {"COURSE", "CONSTRAINT","MEETING","CODE","TYPE","NAME","CLASS","ITEM","SECTION","CAPACITY","CRN","INSTRUCTOR","START","END_T","DAY"};//MORE TO COME     
-
+  char *definedElements[1000];
+  int current_index = 0;
   int size(char *);
     
 
-#line 94 "hw4.tab.c" /* yacc.c:338  */
+#line 99 "hw4.tab.c" /* yacc.c:338  */
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
 #   if 201103L <= __cplusplus
@@ -163,13 +168,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 25 "hw4.y" /* yacc.c:353  */
+#line 30 "hw4.y" /* yacc.c:353  */
 
   Tracker coll;
   TreeNode *treeptr;
   Attribute *attr;
 
-#line 173 "hw4.tab.c" /* yacc.c:353  */
+#line 178 "hw4.tab.c" /* yacc.c:353  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -475,12 +480,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    59,    59,    59,    60,    60,    61,    61,    62,    63,
-      64,    64,    65,    65,    65,    66,    68,    70,    71,    72,
-      73,    74,    74,    75,    75,    75,    75,    76,    76,    77,
-      78,    79,    80,    80,    81,    81,    81,    82,    82,    82,
-      82,    82,    83,    84,    85,    85,    86,    87,    88,    89,
-      89
+       0,    67,    67,    67,    68,    68,    69,    69,    70,    71,
+      72,    72,    73,    73,    73,    74,    76,    78,    79,    80,
+      81,    82,    82,    83,    83,    83,    83,    84,    84,    85,
+      86,    87,    88,    88,    89,    89,    89,    90,    90,    90,
+      90,    90,    91,    92,    93,    93,    94,    95,    96,    97,
+      97
 };
 #endif
 
@@ -1306,169 +1311,205 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 59 "hw4.y" /* yacc.c:1645  */
+#line 67 "hw4.y" /* yacc.c:1645  */
     {rootPtr = (yyvsp[0].treeptr);}
-#line 1312 "hw4.tab.c" /* yacc.c:1645  */
+#line 1317 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 4:
-#line 60 "hw4.y" /* yacc.c:1645  */
+#line 68 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = mergeCourse((yyvsp[0].treeptr),NULL);}
-#line 1318 "hw4.tab.c" /* yacc.c:1645  */
+#line 1323 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 5:
-#line 60 "hw4.y" /* yacc.c:1645  */
+#line 68 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = mergeCourse((yyvsp[-1].treeptr),(yyvsp[0].treeptr)); }
-#line 1324 "hw4.tab.c" /* yacc.c:1645  */
+#line 1329 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 6:
-#line 61 "hw4.y" /* yacc.c:1645  */
+#line 69 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = genCourse((yyvsp[-2].attr),(yyvsp[-1].treeptr));}
-#line 1330 "hw4.tab.c" /* yacc.c:1645  */
+#line 1335 "hw4.tab.c" /* yacc.c:1645  */
+    break;
+
+  case 7:
+#line 69 "hw4.y" /* yacc.c:1645  */
+    {(yyval.treeptr) = genConstraint((yyvsp[-1].treeptr));}
+#line 1341 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 8:
-#line 62 "hw4.y" /* yacc.c:1645  */
+#line 70 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = (yyvsp[-1].attr);}
-#line 1336 "hw4.tab.c" /* yacc.c:1645  */
+#line 1347 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 10:
-#line 64 "hw4.y" /* yacc.c:1645  */
+#line 72 "hw4.y" /* yacc.c:1645  */
     { (yyval.attr) = connectAttr((yyvsp[0].attr),NULL); }
-#line 1342 "hw4.tab.c" /* yacc.c:1645  */
+#line 1353 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 11:
-#line 64 "hw4.y" /* yacc.c:1645  */
+#line 72 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
-#line 1348 "hw4.tab.c" /* yacc.c:1645  */
+#line 1359 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 12:
-#line 65 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr) = makeAttr(CODE,(yyvsp[0].coll));}
-#line 1354 "hw4.tab.c" /* yacc.c:1645  */
+#line 73 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(CODE,(yyvsp[0].coll),0);}
+#line 1365 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 13:
-#line 65 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr)=makeAttr(NAME,(yyvsp[0].coll));}
-#line 1360 "hw4.tab.c" /* yacc.c:1645  */
+#line 73 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr)=makeAttr(NAME,(yyvsp[0].coll),0);}
+#line 1371 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 14:
-#line 65 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr)=makeAttr(TYPE,(yyvsp[0].coll)); }
-#line 1366 "hw4.tab.c" /* yacc.c:1645  */
+#line 73 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr)=makeAttr(TYPE,(yyvsp[0].coll),0); }
+#line 1377 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 15:
-#line 66 "hw4.y" /* yacc.c:1645  */
+#line 74 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) =mergeClass((yyvsp[0].treeptr),NULL);}
-#line 1372 "hw4.tab.c" /* yacc.c:1645  */
+#line 1383 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 16:
-#line 68 "hw4.y" /* yacc.c:1645  */
+#line 76 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = mergeClass((yyvsp[-1].treeptr),(yyvsp[0].treeptr));}
-#line 1378 "hw4.tab.c" /* yacc.c:1645  */
+#line 1389 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 17:
-#line 70 "hw4.y" /* yacc.c:1645  */
+#line 78 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = genClass((yyvsp[-3].attr),(yyvsp[-1].treeptr));}
-#line 1384 "hw4.tab.c" /* yacc.c:1645  */
+#line 1395 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 21:
-#line 74 "hw4.y" /* yacc.c:1645  */
+#line 82 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = connectAttr((yyvsp[0].attr),NULL);}
-#line 1390 "hw4.tab.c" /* yacc.c:1645  */
+#line 1401 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 22:
-#line 74 "hw4.y" /* yacc.c:1645  */
+#line 82 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr)= connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
-#line 1396 "hw4.tab.c" /* yacc.c:1645  */
+#line 1407 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 23:
-#line 75 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr) = makeAttr(SECTION,(yyvsp[0].coll));}
-#line 1402 "hw4.tab.c" /* yacc.c:1645  */
+#line 83 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(SECTION,(yyvsp[0].coll),0);}
+#line 1413 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 24:
-#line 75 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr) = makeAttr(INSTRUCTOR,(yyvsp[0].coll)); }
-#line 1408 "hw4.tab.c" /* yacc.c:1645  */
+#line 83 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(INSTRUCTOR,(yyvsp[0].coll),0); }
+#line 1419 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 25:
-#line 75 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr) = makeAttr(CRN,(yyvsp[0].coll));}
-#line 1414 "hw4.tab.c" /* yacc.c:1645  */
+#line 83 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(CRN,(yyvsp[0].coll),0);}
+#line 1425 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 26:
-#line 75 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr) = makeAttr(CAPACITY,(yyvsp[0].coll));}
-#line 1420 "hw4.tab.c" /* yacc.c:1645  */
+#line 83 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(CAPACITY,(yyvsp[0].coll),0);}
+#line 1431 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 27:
-#line 76 "hw4.y" /* yacc.c:1645  */
+#line 84 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr)=mergeMeet((yyvsp[0].treeptr),NULL);}
-#line 1426 "hw4.tab.c" /* yacc.c:1645  */
+#line 1437 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 28:
-#line 76 "hw4.y" /* yacc.c:1645  */
+#line 84 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr) = mergeMeet((yyvsp[-1].treeptr),(yyvsp[0].treeptr));}
-#line 1432 "hw4.tab.c" /* yacc.c:1645  */
+#line 1443 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 29:
-#line 77 "hw4.y" /* yacc.c:1645  */
+#line 85 "hw4.y" /* yacc.c:1645  */
     {(yyval.treeptr)=genMeeting((yyvsp[-1].attr));}
-#line 1438 "hw4.tab.c" /* yacc.c:1645  */
+#line 1449 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 32:
-#line 80 "hw4.y" /* yacc.c:1645  */
+#line 88 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = connectAttr((yyvsp[0].attr),NULL);}
-#line 1444 "hw4.tab.c" /* yacc.c:1645  */
+#line 1455 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 33:
-#line 80 "hw4.y" /* yacc.c:1645  */
+#line 88 "hw4.y" /* yacc.c:1645  */
     {(yyval.attr) = connectAttr((yyvsp[-1].attr),(yyvsp[0].attr));}
-#line 1450 "hw4.tab.c" /* yacc.c:1645  */
+#line 1461 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 34:
-#line 81 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr) = makeAttr(DAY,(yyvsp[0].coll));}
-#line 1456 "hw4.tab.c" /* yacc.c:1645  */
+#line 89 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(DAY,(yyvsp[0].coll),0);}
+#line 1467 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 35:
-#line 81 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr) = makeAttr(START,(yyvsp[0].coll));}
-#line 1462 "hw4.tab.c" /* yacc.c:1645  */
+#line 89 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(START,(yyvsp[0].coll),0);}
+#line 1473 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
   case 36:
-#line 81 "hw4.y" /* yacc.c:1645  */
-    {(yyval.attr) = makeAttr(END_T,(yyvsp[0].coll));}
-#line 1468 "hw4.tab.c" /* yacc.c:1645  */
+#line 89 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(END_T,(yyvsp[0].coll),0);}
+#line 1479 "hw4.tab.c" /* yacc.c:1645  */
+    break;
+
+  case 44:
+#line 93 "hw4.y" /* yacc.c:1645  */
+    {(yyval.treeptr) = mergeItem((yyvsp[0].treeptr),NULL);}
+#line 1485 "hw4.tab.c" /* yacc.c:1645  */
+    break;
+
+  case 45:
+#line 93 "hw4.y" /* yacc.c:1645  */
+    {(yyval.treeptr) = mergeItem((yyvsp[-1].treeptr),(yyvsp[0].treeptr));}
+#line 1491 "hw4.tab.c" /* yacc.c:1645  */
+    break;
+
+  case 46:
+#line 94 "hw4.y" /* yacc.c:1645  */
+    {(yyval.treeptr) = genItem((yyvsp[-1].attr));}
+#line 1497 "hw4.tab.c" /* yacc.c:1645  */
+    break;
+
+  case 49:
+#line 97 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(CODE,(yyvsp[0].coll),1);}
+#line 1503 "hw4.tab.c" /* yacc.c:1645  */
+    break;
+
+  case 50:
+#line 97 "hw4.y" /* yacc.c:1645  */
+    {(yyval.attr) = makeAttr(CRN,(yyvsp[0].coll),1);}
+#line 1509 "hw4.tab.c" /* yacc.c:1645  */
     break;
 
 
-#line 1472 "hw4.tab.c" /* yacc.c:1645  */
+#line 1513 "hw4.tab.c" /* yacc.c:1645  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1695,17 +1736,44 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 90 "hw4.y" /* yacc.c:1903  */
+#line 98 "hw4.y" /* yacc.c:1903  */
+
+TreeNode *genItem(Attribute *attrs){
+
+  TreeNode *ret = (TreeNode *)malloc(sizeof(TreeNode));
+  ret->thisElemType = ITEM;
+  ret->node = (wildCard *)malloc(sizeof(wildCard));
+  ret->node->item.attr = attrs;
+  ret->next = NULL;
+
+  return ret;
+}
+int searchElement(char elem[100]){
+  for(int i = 0;i<current_index+1 && definedElements[i]!=NULL;i++)
+    {
+      //      printf("ALALALA %s %s\n",definedElements[i],elem);
+      
+
+      int res = strcmp( definedElements[i],elem);
+      if(res == 0)
+	return 1;
+      
 
 
+    }
 
+  return 0;
+
+
+}
 int semanticCheck(){
 
   TreeNode *ptr = rootPtr;
   while(ptr){
+    //printf("%s \n",dicty[ptr->thisElemType]);
   if(ptr->thisElemType == COURSE)
     {
-      printf("here we go \n");
+      // printf("here we go \n");
       courseNode current = ptr->node->course;
       int codeCount = 0;
       int nameCount = 0;
@@ -1838,25 +1906,68 @@ int semanticCheck(){
     }
   else{
 
-    //constraint thingy here
+    TreeNode * items = ptr->node->constraint.items;
+    
+    while(items != NULL){
+      Attribute *curr  = items->node->item.attr;
 
+    
+    if(curr->type == CRN)
+      {
+	if(searchElement(curr->str) == 0)
+	  {
+	    printf("ERROR: constraint at line %d refers to an  undefined crn= \n",curr->lineNumber);
+	  }
+	
+	
+      }
+    else if(curr->type == CODE){
+      //printf("item CODE %s \n",curr->str);
+	if(searchElement(curr->str) == 0)
+	  {
+	    printf("ERROR: constraint at line %d refers to an  undefined code= \n",curr->lineNumber);
+	  }
+      }
+    //constraint thingy here
+    items = items->next;
+    }
   }
   ptr = ptr->next;
   }
   return 1;
 }
+TreeNode *genConstraint(TreeNode *items){
+
+  TreeNode *ret = (struct TreeNode *)malloc(sizeof(TreeNode));
+  ret ->thisElemType = CONSTRAINT;
+  ret->node = (wildCard *)malloc(sizeof(wildCard));
+  ret->node->constraint.items = items;
+  ret->next = NULL;
+  return ret;
 
 
-Attribute * makeAttr(ELEMTYPE elem,Tracker tr){
-  
+
+}
+
+Attribute * makeAttr(ELEMTYPE elem,Tracker tr,int flag){
+
+  //printf("WOWAWO %s %d %s \n",dicty[elem],flag,tr.str);
+  if( (elem == CODE  || elem == CRN) && (flag != 1))
+    {
+      //      printf("adding %s \n ",tr.str);
+      definedElements[current_index]=(char *)malloc(sizeof(char)*100);
+      strcpy(definedElements[current_index], tr.str);
+      current_index++;
+
+    }
   Attribute *ret = (Attribute *)malloc(sizeof(Attribute));
   ret->type = elem;
   ret->next = NULL;
   ret->lineNumber = tr.lineNum;
-  printf("%d NUMLINE",ret->lineNumber);
+  // printf("%d NUMLINE",ret->lineNumber);
   //&ret->str[0] = (char *)malloc(sizeof(char)*100);
   strcpy(ret->str,tr.str);
-  printf("%s %s \n ",ret->str,dicty[elem]);
+  //printf("%s %s \n ",ret->str,dicty[elem]);
   //  memset(&strink[0], 0, sizeof(char)*100);
 
   return ret;
@@ -1885,6 +1996,12 @@ Attribute * connectAttr(Attribute *a1,Attribute *a2){
 
 
 TreeNode *mergeClass(TreeNode *a1,TreeNode *a2){
+  
+  a1->next = a2;
+  return a1;
+  
+}
+TreeNode *mergeItem(TreeNode *a1,TreeNode *a2){
   
   a1->next = a2;
   return a1;
@@ -1985,6 +2102,12 @@ int main(){
     q = q->next;
     }*/
     semanticCheck();
+    /* for(int i=0;i<1000 && definedElements[i]!=NULL;i++)
+       printf("%s \n",definedElements[i]);*/
+
+    
+
+
     return 0;
   }	
 } 

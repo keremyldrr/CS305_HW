@@ -7,19 +7,24 @@
     printf("%s\n", s);
   }
   TreeNode *rootPtr;
+  int searchElement(char q[100]);
   TreeNode * genConst(int crn);
   TreeNode * genCourse(Attribute *,TreeNode *);
   TreeNode *mergeClass(TreeNode *,TreeNode *);
+  TreeNode *mergeItem(TreeNode *,TreeNode *);
   TreeNode *mergeCourse(TreeNode *,TreeNode *);
   TreeNode *genClass(Attribute *,TreeNode *);
   int semanticCheck();
+  TreeNode *genConstraint(TreeNode *);
   TreeNode *genMeeting(Attribute *);
+    TreeNode *genItem(Attribute *);
   TreeNode *mergeMeet(TreeNode *,TreeNode *);
-  Attribute *makeAttr(ELEMTYPE,Tracker);
+  Attribute *makeAttr(ELEMTYPE,Tracker,int);
   Attribute *connectAttr(Attribute *,Attribute *);
   void printTree(TreeNode *);
   char *dicty[15] =  {"COURSE", "CONSTRAINT","MEETING","CODE","TYPE","NAME","CLASS","ITEM","SECTION","CAPACITY","CRN","INSTRUCTOR","START","END_T","DAY"};//MORE TO COME     
-
+  char *definedElements[1000];
+  int current_index = 0;
   int size(char *);
     %}
 %union {
@@ -35,6 +40,8 @@
 %type <treeptr> element
 %type <treeptr> classList
 %type <treeptr> class
+%type <treeptr> itemList
+%type <treeptr> item
 %type <treeptr> meetingList
 %type <treeptr> meeting
 %type <attr> beginCourse
@@ -42,6 +49,7 @@
 %type <attr> classAttr
 %type <attr> meetingAttrList
 %type <attr> meetingAttr
+%type <attr> itemAttr
 
 %type <coll> day
 
@@ -58,11 +66,11 @@
 %%
 prog :  elementList {rootPtr = $1;} | ;
 elementList :  element{$$ = mergeCourse($1,NULL);} | element elementList{$$ = mergeCourse($1,$2); };
-element : beginCourse classList endCourse{$$ = genCourse($1,$2);} | beginConstraint itemList endConstraint;
+element : beginCourse classList endCourse{$$ = genCourse($1,$2);} | beginConstraint itemList endConstraint {$$ = genConstraint($2);};
 beginCourse : tOPEN tCOURSE courseAttrList tCLOSE {$$ = $3;};
 endCourse : tEND tCOURSE tCLOSE;
 courseAttrList :  courseAttr{ $$ = connectAttr($1,NULL); } |  courseAttr  courseAttrList {$$ = connectAttr($1,$2);};
-courseAttr : tCODE tSTRING {$$ = makeAttr(CODE,$2);}| tNAME tSTRING{$$=makeAttr(NAME,$2);}|tTYPE tSTRING{$$=makeAttr(TYPE,$2); };
+courseAttr : tCODE tSTRING {$$ = makeAttr(CODE,$2,0);}| tNAME tSTRING{$$=makeAttr(NAME,$2,0);}|tTYPE tSTRING{$$=makeAttr(TYPE,$2,0); };
 classList : class{$$ =mergeClass($1,NULL);}
 
 | class classList{$$ = mergeClass($1,$2);};
@@ -72,31 +80,58 @@ beginClass  : tOPEN tCLASS;
 endClass :  tCLOSE;
 closeClass : tEND tCLASS tCLOSE;
 classAttrList :  classAttr {$$ = connectAttr($1,NULL);} | classAttr classAttrList {$$= connectAttr($1,$2);};
-classAttr : tSECTION tSTRING {$$ = makeAttr(SECTION,$2);}| tINSTRUCTOR tSTRING {$$ = makeAttr(INSTRUCTOR,$2); }|tCRN tNUM {$$ = makeAttr(CRN,$2);}| tCAPACITY tNUM {$$ = makeAttr(CAPACITY,$2);};
+classAttr : tSECTION tSTRING {$$ = makeAttr(SECTION,$2,0);}| tINSTRUCTOR tSTRING {$$ = makeAttr(INSTRUCTOR,$2,0); }|tCRN tNUM {$$ = makeAttr(CRN,$2,0);}| tCAPACITY tNUM {$$ = makeAttr(CAPACITY,$2,0);};
 meetingList : meeting {$$=mergeMeet($1,NULL);} |meeting  meetingList {$$ = mergeMeet($1,$2);};
 meeting : beginMeeting meetingAttrList endMeeting{$$=genMeeting($2);};
 beginMeeting :  tOPEN tMEETING ;
 endMeeting :tSELF ;
 meetingAttrList : meetingAttr{$$ = connectAttr($1,NULL);} | meetingAttr meetingAttrList {$$ = connectAttr($1,$2);};
-meetingAttr : tDAY day {$$ = makeAttr(DAY,$2);} | tSTART tTIME {$$ = makeAttr(START,$2);} | tEND_A tTIME{$$ = makeAttr(END_T,$2);};
+meetingAttr : tDAY day {$$ = makeAttr(DAY,$2,0);} | tSTART tTIME {$$ = makeAttr(START,$2,0);} | tEND_A tTIME{$$ = makeAttr(END_T,$2,0);};
 day : tMON  | tTUE  | tWED  | tTHU | tFRI;
 beginConstraint : tOPEN tCONSTRAINT tCLOSE;
 endConstraint : tEND tCONSTRAINT  tCLOSE;
-itemList :  item | item itemList;
-item :  beginItem itemAttr endItem;
+itemList :  item {$$ = mergeItem($1,NULL);} | item itemList {$$ = mergeItem($1,$2);};
+item :  beginItem itemAttr endItem {$$ = genItem($2);};
 beginItem : tOPEN tITEM;
 endItem : tSELF;
-itemAttr: tCODE tSTRING | tCRN tNUM ;
+itemAttr: tCODE tSTRING {$$ = makeAttr(CODE,$2,1);}| tCRN tNUM {$$ = makeAttr(CRN,$2,1);} ;
 %%
+TreeNode *genItem(Attribute *attrs){
+
+  TreeNode *ret = (TreeNode *)malloc(sizeof(TreeNode));
+  ret->thisElemType = ITEM;
+  ret->node = (wildCard *)malloc(sizeof(wildCard));
+  ret->node->item.attr = attrs;
+  ret->next = NULL;
+
+  return ret;
+}
+int searchElement(char elem[100]){
+  for(int i = 0;i<current_index+1 && definedElements[i]!=NULL;i++)
+    {
+      //      printf("ALALALA %s %s\n",definedElements[i],elem);
+      
+
+      int res = strcmp( definedElements[i],elem);
+      if(res == 0)
+	return 1;
+      
 
 
+    }
+
+  return 0;
+
+
+}
 int semanticCheck(){
 
   TreeNode *ptr = rootPtr;
   while(ptr){
+    //printf("%s \n",dicty[ptr->thisElemType]);
   if(ptr->thisElemType == COURSE)
     {
-      printf("here we go \n");
+      // printf("here we go \n");
       courseNode current = ptr->node->course;
       int codeCount = 0;
       int nameCount = 0;
@@ -229,25 +264,68 @@ int semanticCheck(){
     }
   else{
 
-    //constraint thingy here
+    TreeNode * items = ptr->node->constraint.items;
+    
+    while(items != NULL){
+      Attribute *curr  = items->node->item.attr;
 
+    
+    if(curr->type == CRN)
+      {
+	if(searchElement(curr->str) == 0)
+	  {
+	    printf("ERROR: constraint at line %d refers to an  undefined crn= \n",curr->lineNumber);
+	  }
+	
+	
+      }
+    else if(curr->type == CODE){
+      //printf("item CODE %s \n",curr->str);
+	if(searchElement(curr->str) == 0)
+	  {
+	    printf("ERROR: constraint at line %d refers to an  undefined code= \n",curr->lineNumber);
+	  }
+      }
+    //constraint thingy here
+    items = items->next;
+    }
   }
   ptr = ptr->next;
   }
   return 1;
 }
+TreeNode *genConstraint(TreeNode *items){
+
+  TreeNode *ret = (struct TreeNode *)malloc(sizeof(TreeNode));
+  ret ->thisElemType = CONSTRAINT;
+  ret->node = (wildCard *)malloc(sizeof(wildCard));
+  ret->node->constraint.items = items;
+  ret->next = NULL;
+  return ret;
 
 
-Attribute * makeAttr(ELEMTYPE elem,Tracker tr){
-  
+
+}
+
+Attribute * makeAttr(ELEMTYPE elem,Tracker tr,int flag){
+
+  //printf("WOWAWO %s %d %s \n",dicty[elem],flag,tr.str);
+  if( (elem == CODE  || elem == CRN) && (flag != 1))
+    {
+      //      printf("adding %s \n ",tr.str);
+      definedElements[current_index]=(char *)malloc(sizeof(char)*100);
+      strcpy(definedElements[current_index], tr.str);
+      current_index++;
+
+    }
   Attribute *ret = (Attribute *)malloc(sizeof(Attribute));
   ret->type = elem;
   ret->next = NULL;
   ret->lineNumber = tr.lineNum;
-  printf("%d NUMLINE",ret->lineNumber);
+  // printf("%d NUMLINE",ret->lineNumber);
   //&ret->str[0] = (char *)malloc(sizeof(char)*100);
   strcpy(ret->str,tr.str);
-  printf("%s %s \n ",ret->str,dicty[elem]);
+  //printf("%s %s \n ",ret->str,dicty[elem]);
   //  memset(&strink[0], 0, sizeof(char)*100);
 
   return ret;
@@ -276,6 +354,12 @@ Attribute * connectAttr(Attribute *a1,Attribute *a2){
 
 
 TreeNode *mergeClass(TreeNode *a1,TreeNode *a2){
+  
+  a1->next = a2;
+  return a1;
+  
+}
+TreeNode *mergeItem(TreeNode *a1,TreeNode *a2){
   
   a1->next = a2;
   return a1;
@@ -376,6 +460,12 @@ int main(){
     q = q->next;
     }*/
     semanticCheck();
+    /* for(int i=0;i<1000 && definedElements[i]!=NULL;i++)
+       printf("%s \n",definedElements[i]);*/
+
+    
+
+
     return 0;
   }	
 } 

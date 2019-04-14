@@ -83,7 +83,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 25 "hw4.y" /* yacc.c:1906  */
+#line 30 "hw4.y" /* yacc.c:1906  */
 
   Tracker coll;
   TreeNode *treeptr;
