@@ -14,8 +14,9 @@ DIGIT    [0-9]
 [/][>] return tSELF;
 [<] return tOPEN;
 [<][/] return tEND;
-course return tCOURSE;
-meeting return tMEETING;
+course { yylval.coll.lineNum=noOfLine;
+       return tCOURSE;}
+meeting { yylval.coll.lineNum=noOfLine;return tMEETING;}
 item return tITEM;
 code= return tCODE;
 type= return tTYPE;
@@ -29,8 +30,9 @@ T {yylval.coll.lineNum= noOfLine;
 R {yylval.coll.lineNum= noOfLine;
 	strcpy(yylval.coll.str,yytext); return tTHU;}
 [>] return tCLOSE;
-class return tCLASS;
-constraint return tCONSTRAINT;
+class { yylval.coll.lineNum=noOfLine; return tCLASS;}
+constraint { yylval.coll.lineNum=noOfLine;
+return tCONSTRAINT;}
 name= return tNAME;
 instructor= return tINSTRUCTOR;
 crn= return tCRN;

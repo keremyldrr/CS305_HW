@@ -1,5 +1,5 @@
 
-#line 2 "lex.yy.c"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -515,8 +515,8 @@ char *yytext;
 #include "hw4.tab.h"
 
 int noOfLine = 1;
-#line 518 "lex.yy.c"
 #line 519 "lex.yy.c"
+#line 520 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -735,7 +735,7 @@ YY_DECL
 	{
 #line 12 "hw4.flx"
 
-#line 738 "lex.yy.c"
+#line 739 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -816,105 +816,107 @@ return tEND;
 case 5:
 YY_RULE_SETUP
 #line 17 "hw4.flx"
-return tCOURSE;
+{ yylval.coll.lineNum=noOfLine;
+       return tCOURSE;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 18 "hw4.flx"
-return tMEETING;
+#line 19 "hw4.flx"
+{ yylval.coll.lineNum=noOfLine;return tMEETING;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 19 "hw4.flx"
+#line 20 "hw4.flx"
 return tITEM;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 20 "hw4.flx"
+#line 21 "hw4.flx"
 return tCODE;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 21 "hw4.flx"
+#line 22 "hw4.flx"
 return tTYPE;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 22 "hw4.flx"
+#line 23 "hw4.flx"
 return tSECTION;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 23 "hw4.flx"
+#line 24 "hw4.flx"
 return tSTART;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 24 "hw4.flx"
+#line 25 "hw4.flx"
 {return tDAY;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 25 "hw4.flx"
+#line 26 "hw4.flx"
 { yylval.coll.lineNum= noOfLine;
 	strcpy(yylval.coll.str,yytext);return tMON;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 27 "hw4.flx"
+#line 28 "hw4.flx"
 {yylval.coll.lineNum= noOfLine;
 	strcpy(yylval.coll.str,yytext); return tTUE;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 29 "hw4.flx"
+#line 30 "hw4.flx"
 {yylval.coll.lineNum= noOfLine;
 	strcpy(yylval.coll.str,yytext); return tTHU;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 31 "hw4.flx"
+#line 32 "hw4.flx"
 return tCLOSE;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 32 "hw4.flx"
-return tCLASS;
+#line 33 "hw4.flx"
+{ yylval.coll.lineNum=noOfLine; return tCLASS;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 33 "hw4.flx"
-return tCONSTRAINT;
+#line 34 "hw4.flx"
+{ yylval.coll.lineNum=noOfLine;
+return tCONSTRAINT;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 34 "hw4.flx"
+#line 36 "hw4.flx"
 return tNAME;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 35 "hw4.flx"
+#line 37 "hw4.flx"
 return tINSTRUCTOR;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 36 "hw4.flx"
+#line 38 "hw4.flx"
 return tCRN;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 37 "hw4.flx"
+#line 39 "hw4.flx"
 return tCAPACITY;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 38 "hw4.flx"
+#line 40 "hw4.flx"
 return tEND_A;
 	YY_BREAK
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 39 "hw4.flx"
+#line 41 "hw4.flx"
 {
 	yylval.coll.lineNum= noOfLine;
 	strcpy(yylval.coll.str,yytext);
@@ -924,14 +926,14 @@ YY_RULE_SETUP
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 45 "hw4.flx"
+#line 47 "hw4.flx"
 {yylval.coll.lineNum = noOfLine;
 	strcpy(yylval.coll.str,yytext);
 	 return tSTRING;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 48 "hw4.flx"
+#line 50 "hw4.flx"
 {
 	strcpy(yylval.coll.str,yytext);	
 	 return tNUM;
@@ -939,38 +941,38 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 52 "hw4.flx"
+#line 54 "hw4.flx"
 {yylval.coll.lineNum= noOfLine;
 	strcpy(yylval.coll.str,yytext); return  tWED;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 54 "hw4.flx"
+#line 56 "hw4.flx"
 { yylval.coll.lineNum= noOfLine;
 	strcpy(yylval.coll.str,yytext); return  tFRI;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 56 "hw4.flx"
+#line 58 "hw4.flx"
 {	yylval.coll.lineNum= noOfLine;
 	strcpy(yylval.coll.str,yytext); return tTIME;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 58 "hw4.flx"
+#line 60 "hw4.flx"
 
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 59 "hw4.flx"
+#line 61 "hw4.flx"
 
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 61 "hw4.flx"
+#line 63 "hw4.flx"
 ECHO;
 	YY_BREAK
-#line 973 "lex.yy.c"
+#line 976 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1975,6 +1977,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 61 "hw4.flx"
+#line 63 "hw4.flx"
 
 

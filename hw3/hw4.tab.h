@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,9 +30,6 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
-
 #ifndef YY_YY_HW4_TAB_H_INCLUDED
 # define YY_YY_HW4_TAB_H_INCLUDED
 /* Debug traces.  */
@@ -56,19 +53,19 @@ extern int yydebug;
     tFRI = 263,
     tNUM = 264,
     tTIME = 265,
-    tOPEN = 266,
+    tMEETING = 266,
     tCOURSE = 267,
-    tCLOSE = 268,
-    tEND = 269,
-    tCODE = 270,
-    tCLASS = 271,
-    tNAME = 272,
-    tTYPE = 273,
-    tSECTION = 274,
-    tINSTRUCTOR = 275,
-    tCRN = 276,
-    tCAPACITY = 277,
-    tMEETING = 278,
+    tCLASS = 268,
+    tOPEN = 269,
+    tCLOSE = 270,
+    tEND = 271,
+    tCODE = 272,
+    tNAME = 273,
+    tTYPE = 274,
+    tSECTION = 275,
+    tINSTRUCTOR = 276,
+    tCRN = 277,
+    tCAPACITY = 278,
     tSELF = 279,
     tDAY = 280,
     tSTART = 281,
@@ -83,13 +80,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 30 "hw4.y" /* yacc.c:1906  */
+#line 31 "hw4.y" /* yacc.c:1909  */
 
   Tracker coll;
   TreeNode *treeptr;
   Attribute *attr;
 
-#line 93 "hw4.tab.h" /* yacc.c:1906  */
+#line 90 "hw4.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
